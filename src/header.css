@@ -1,0 +1,68 @@
+ #maintoolbar {
+    margin-bottom: -3px;
+    margin-top: -8px;
+    border: 0px;
+    min-height: 27px;
+    margin-left: 0px;
+    padding-top: 11px;
+    padding-bottom: 3px;
+  }
+
+  .toolbar {
+    padding: 0px;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  } 
+  .toolbar .btn-group {
+    margin-top: 0px;
+    margin-left: 5px;
+  }
+  .btn-group, .btn-group-vertical {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .btn-group > .btn:first-child {
+    margin-left: 0;
+  }
+  .toolbar .btn {
+    padding: 2px 8px;
+  }
+  .btn-group > .btn, .btn-group-vertical > .btn {
+    position: relative;
+    float: left;
+  }
+  .btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  .btn {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+    padding: 6px 12px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    border-radius: 2px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
