@@ -11,8 +11,14 @@ class App extends React.Component {
     super(props);
     this.state = {
       result: null,
-      context: {},
-      editorsValue: [`var x = 100;show(x);`],
+      cellContext_data: [{ 
+        cellindex_value: 0,
+        output: []}],
+      run_all: false,
+      // cellindex_value: 0,
+      editorsValue: [`for(var i = 0;i<10 ; i++){
+        show(i);
+        }`],
       editorsOutput: [],
       rows: 5,
     }
@@ -23,16 +29,6 @@ class App extends React.Component {
   }
 
 
-  componentDidMount() {
-
-  }
-
-  componentDidUpdate() {
-    // global.myEval('console.log("hello",x);var x=500;');
-  }
-
-
-
   handleEditorChange = (newValue, cellindex) => {
     const newEditorsValue = [...this.state.editorsValue];
     newEditorsValue[cellindex] = newValue;
@@ -41,21 +37,75 @@ class App extends React.Component {
 
 
   }
-  run = (code, this_component) => {
+
+  // run = (cellIndex, this_component) => {
+
+  //   global.show =  function (data) {
+  //     let all_results = this_component.state.cellContext_data[cellIndex];  //its dict inside list   [{cellindex},]
+  //     if (all_results["initial_run"] === true) {  // all_resukt is dict
+  //       // initial_run is true so there is no perior output so directly set new output
+  //       let cell_output = all_results["output"].concat(data); //[...,data];
+  //       const cellContext = {
+  //         initial_run: false,
+  //         cellindex_value: cellIndex,
+  //         output : cell_output
+  //       };
+
+  //       this_component.setState(prevState => {
+  //         const newCellContextData = [...prevState.cellContext_data];
+  //         newCellContextData[cellIndex] = cellContext;
+  //         console.log('after setup====',newCellContextData);
+  //         return { cellContext_data: newCellContextData };
+  //       });
+
+  //     }
+  //     else {
+  //       console.log('initial run is false========================');
+  //     }
+  //   }
+
+  //   // execute js code here
+  //   let code = this_component.state.editorsValue[cellIndex];
+  //   global.eval(code);
+
+  // }
+
+
+
+  run = (cellIndex, this_component) => {
+    let output = [];
     global.show = function (data) {
-      console.log("context received in show()---", this_component);
-      let all_results = this_component.state.editorsOutput;
-      all_results[this_component.state.context.cellindex] = data;
-      this_component.setState({ 'editorsOutput': all_results })
-    }
-
-
+      output.push(data);
+    };
+  
+    // execute js code here
+    let code = this_component.state.editorsValue[cellIndex];
     global.eval(code);
-  }
+  
+    let all_results = this_component.state.cellContext_data[cellIndex];
+      const cellContext = {
+        cellindex_value: cellIndex,
+        output: output
+      };
+  
+      this_component.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
+    
+  };
+  
+  
 
-  evalCode = (code, context) => {
+
+
+  
+  
+
+  evalCode = (cellIndex) => {
     try {
-      this.run(code, this);
+      this.run(cellIndex, this);
     } catch (error) {
       this.setState({ result: error.toString() });
     }
@@ -64,21 +114,72 @@ class App extends React.Component {
 
 
   handleKeyDown = (e, cellindex) => {
-    this.setState({ 'context': { 'cellindex': cellindex } });
     if (e.ctrlKey && e.keyCode === 13) {
-      console.log(`Ctrl + Enter pressed on input ${cellindex} ${this.state.editorsValue[cellindex]}`);
-      this.evalCode(this.state.editorsValue[cellindex], this.state.context);
-
-    } else if (e.shiftKey && e.keyCode === 13) {
       e.preventDefault();
-      this.evalCode(this.state.editorsValue[cellindex], this.state.context);
+      console.log('*******control enter');
+
+      const cellIndex = cellindex;
+      const cellContext = {
+        cellindex_value: cellIndex,
+        output : []
+      };
+
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        
+        if (typeof newCellContextData[cellIndex] === "undefined") {
+          newCellContextData.splice(cellIndex, 0, cellContext);
+        } else {
+          newCellContextData[cellIndex] = cellContext;
+        }
+      
+        return { cellContext_data: newCellContextData };
+      }, () => {
+        this.evalCode(cellIndex);
+      });
+      
+
+      
+
+    }
+    else if (e.shiftKey && e.keyCode === 13) {
+      e.preventDefault();
+      console.log('*******shift enter',);
+      
+      const cellIndex = cellindex;
+      const cellContext = {
+        cellindex_value: cellIndex,
+        output : []
+      };
+
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        
+        if (typeof newCellContextData[cellIndex] === "undefined") {
+          newCellContextData.splice(cellIndex, 0, cellContext);
+        } else {
+          newCellContextData[cellIndex] = cellContext;
+        }
+      
+        return { cellContext_data: newCellContextData };
+      }, () => {
+        this.evalCode(cellIndex);
+      });
+      
+
+      // addd extra cell need to varify next cell is present;
       this.setState({ 'editorsValue': [...this.state.editorsValue, ""] });  // addd cell after shift+enter
 
     }
+
+
+
   }
 
 
   render = () => {
+
+
     return (
       <div className="App">
         <HeaderComponent></HeaderComponent>
@@ -88,17 +189,13 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.editorsValue.map((item, index) => {
-                  return <CellComponent rows={this.state.rows} key={index} cellindex={index} editorsValue={this.state.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.editorsOutput[index]} />
+                  return <CellComponent rows={this.state.rows} key={index} cellindex={index} editorsValue={this.state.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} />
                 })
               }
 
             </div>
-            <div>
-              <h2>
-                {this.state.result}
-              </h2>
 
-            </div>
+
           </div>
         </div>
       </div>
