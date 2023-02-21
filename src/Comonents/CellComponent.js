@@ -3,9 +3,9 @@ import React from 'react';
 import CodeEditor from 'react-simple-code-editor';
 import 'prismjs/themes/prism.css';
 import '../cellstyle.css'
-import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons';
+import Alert from 'react-bootstrap/Alert';
 
 const CellComponent = (props) => {  
   return (
@@ -34,6 +34,11 @@ const CellComponent = (props) => {
           }}
         />
       </div>
+      {
+        props.error ? (<Alert key='danger' variant='danger'>
+        {props.error}
+        </Alert>) : null
+      }
       {
         props.output.length > 0 ? (<div className="output_wrapper" >
         <div className="output output_scroll">

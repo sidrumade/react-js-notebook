@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import '../header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faPlus, faCut, faCopy, faPaste, faArrowUp, faArrowDown, faPlay, faStop, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { faSave, faPlus, faCut, faCopy, faPaste, faArrowUp, faArrowDown, faPlay, faStop, faRepeat , faRemove} from "@fortawesome/free-solid-svg-icons";
 
 const HeaderComponent = (props) => {
     return (
@@ -36,9 +36,67 @@ const HeaderComponent = (props) => {
                                 <NavDropdown.Item href="#action/3.1">Toggle Toolbar</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">Toggle Line Numbers</NavDropdown.Item>
                             </NavDropdown>
-                            <NavDropdown title="Insert" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Cell Above</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Cell Below</NavDropdown.Item>
+                            <NavDropdown title="Tools" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="save and checkpoint">
+                                    <FontAwesomeIcon icon={faSave} /> Save
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
+                                    <FontAwesomeIcon icon={faPlus} /> Insert cell below
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="cut selected cells" >
+                                    <FontAwesomeIcon icon={faCut} /> Cut selected cells
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="copy selected cells" >
+                                    <FontAwesomeIcon icon={faCopy} /> Copy Selected Cells
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="past selected cells below" >
+                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cells Below
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="past selected cells above" >
+                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cells Above
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="move selected cells up" >
+                                    <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cells Up
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="move selected cells down" >
+                                    <FontAwesomeIcon icon={faArrowDown} /> Move Selected Cells Down
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="run cell, select below" >
+                                    <FontAwesomeIcon icon={faPlay} /> Run Cell, Select Below
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="interrupt the kernel" >
+                                    <FontAwesomeIcon icon={faStop} /> Interrupt the Kernel
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="restart the kernel (with dialog)" >
+                                    <FontAwesomeIcon icon={faRepeat} /> Restart the Kernel (with dialog)
+                                </button>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="delete cell" >
+                                    <FontAwesomeIcon icon={faRemove} /> Delete Cell
+                                </button>
+                                </NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">HTML</NavDropdown.Item>
@@ -53,70 +111,13 @@ const HeaderComponent = (props) => {
                                 <NavDropdown.Item href="#action/3.1">Restart & Run All</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link href="#help">Help</Nav.Link>
+                            
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
 
             </Navbar>
-            <Container>
-                <div id="maintoolbar" className="navbar">
-                    <div className="toolbar-inner navbar-inner navbar-nobg">
-                        <div id="maintoolbar-container" className="container toolbar">
-                            <div className="btn-group" id="save-notbook">
-                                <button className="btn btn-default" title="Save and Checkpoint">
-                                    <FontAwesomeIcon icon={faSave} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="insert_below">
-                                <button className="btn btn-default" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
-                                    <FontAwesomeIcon icon={faPlus} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="cut_paste">
-                                <button className="btn btn-default" title="cut selected cells" >
-                                    <FontAwesomeIcon icon={faCut} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="copy_paste">
-                                <button className="btn btn-default" title="copy selected cells" >
-                                    <FontAwesomeIcon icon={faCopy} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="paste">
-                                <button className="btn btn-default" title="past selected cells below" >
-                                    <FontAwesomeIcon icon={faPaste} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="arrowUP">
-                                <button className="btn btn-default" title="move selected cells up" >
-                                    <FontAwesomeIcon icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="arrowDown">
-                                <button className="btn btn-default" title="move selected cells down" >
-                                    <FontAwesomeIcon icon={faArrowDown} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="play">
-                                <button className="btn btn-default" title="run cell, select below" >
-                                    <FontAwesomeIcon icon={faPlay} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="stop">
-                                <button className="btn btn-default" title="interrupt the kernel" >
-                                    <FontAwesomeIcon icon={faStop} />
-                                </button>
-                            </div>
-                            <div className="btn-group" id="restart">
-                                <button className="btn btn-default" title="restart the kernel (with dialog)" >
-                                    <FontAwesomeIcon icon={faRepeat} />
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </Container>
+            
         </>
     );
 }

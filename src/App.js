@@ -21,7 +21,8 @@ class App extends React.Component {
         editorsValue: `for(var i = 0;i<10 ; i++){
                             show(i);
                             }`,
-        rows: 5
+        rows: 5,
+        error: ''
       }],
       run_all: false,
       active_cell_index: 0
@@ -74,8 +75,25 @@ class App extends React.Component {
   evalCode = (cellIndex) => {
     try {
       this.run(cellIndex, this);
+
+      let cellContext = this.state.cellContext_data[cellIndex];
+      cellContext['error'] = '';
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
+
+
     } catch (error) {
-      this.setState({ result: error.toString() });
+
+      let cellContext = this.state.cellContext_data[cellIndex];
+      cellContext['error'] = error.toString();
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
     }
 
   };
@@ -124,7 +142,7 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error = {item.error} />
                 })
               }
             </div>
