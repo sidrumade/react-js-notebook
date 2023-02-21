@@ -13,8 +13,8 @@
       border-right-color: transparent;
       border-bottom-color: transparent;
       border-left-color: transparent;
-    padding: 6px 12px;
-    font-size: 13px;
+    padding: 3px 1px;
+    font-size: 12px;
     line-height: 1.42857143;
     border-radius: 2px;
     -webkit-user-select: none;
@@ -23,3 +23,8 @@
     user-select: none;
   }
   
+
+.dropdown-menu{
+  height: 50vh;
+  overflow: auto;
+}

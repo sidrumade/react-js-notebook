@@ -94,7 +94,7 @@ const HeaderComponent = (props) => {
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="delete cell" >
+                                <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faRemove} /> Delete Cell
                                 </button>
                                 </NavDropdown.Item>
