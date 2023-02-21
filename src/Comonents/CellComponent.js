@@ -50,7 +50,7 @@ const CellComponent = (props) => {
             <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
               <div>
               {props.output.map((value, index) => {
-              return <pre key={index}>{value}</pre>
+              return <pre key={index}>{JSON.stringify(value)}</pre>
               })}
               </div>
             </div>
