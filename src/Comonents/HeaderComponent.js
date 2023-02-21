@@ -5,11 +5,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import '../header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { faSave, faPlus, faCut, faCopy, faPaste, faArrowUp, faArrowDown, faPlay, faStop, faRepeat } from "@fortawesome/free-solid-svg-icons";
 
-
-const HeaderComponent = () => {
+const HeaderComponent = (props) => {
     return (
         <>
             <Navbar bg="light" expand="lg" sticky="top">
@@ -69,8 +67,8 @@ const HeaderComponent = () => {
                                     <FontAwesomeIcon icon={faSave} />
                                 </button>
                             </div>
-                            <div className="btn-group" id="insert_above_below">
-                                <button className="btn btn-default" title="insert cell below" >
+                            <div className="btn-group" id="insert_below">
+                                <button className="btn btn-default" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faPlus} />
                                 </button>
                             </div>

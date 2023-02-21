@@ -7,9 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 
-const CellComponent = (props) => {
-
-  
+const CellComponent = (props) => {  
   return (
     <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e)=>{ props.changeActiveCellIndex(props.cellindex) }}>
       <div style={{ display: 'flex' }}>
@@ -22,8 +20,8 @@ const CellComponent = (props) => {
           </div>
         </div>
         <CodeEditor
-          value={props.editorsValue[props.cellindex]}
-          rows={props.rows}
+          value={props.editorsValue || '' }
+          rows={props.rows || 5}
           onValueChange={(newValue) => props.handleEditorChange(newValue, props.cellindex)}
           highlight={code => Prism.highlight(code, Prism.languages.javascript)}
           onKeyDown={(e) => props.handleKeyDown(e, props.cellindex)}
