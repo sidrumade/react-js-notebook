@@ -124,6 +124,7 @@ div.prompt_container {
   justify-content: space-between;
   align-items: flex-start;
   text-align: right;
+  background: white;
 }
 div.prompt {
   min-width: 10ex;
@@ -250,6 +251,7 @@ div.output_text {
 div.cell.selected, div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
   border-left: solid blue;
+  
 }
 div.cell {
   display: -webkit-box;
@@ -277,4 +279,5 @@ div.cell {
   outline: none;
   position: relative;
   overflow: visible;
+  background: white;
 }
