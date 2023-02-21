@@ -74,7 +74,7 @@ const HeaderComponent = (props) => {
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="move selected cells down" >
+                                <button className="btn" title="move selected cells down" onClick={(e)=>props.MoveCellDownHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faArrowDown} /> Move Selected Cells Down
                                 </button>
                                 </NavDropdown.Item>
