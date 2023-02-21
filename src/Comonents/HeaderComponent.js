@@ -44,32 +44,33 @@ const HeaderComponent = (props) => {
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
-                                    <FontAwesomeIcon icon={faPlus} /> Insert cell below
+                                    <FontAwesomeIcon icon={faPlus} /> Insert Cell Below
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="cut selected cells" >
-                                    <FontAwesomeIcon icon={faCut} /> Cut selected cells
+                                <button className="btn" title="insert cell above" onClick={(e)=>props.InsertCellAboveHandler(props.cellIndex)}>
+                                    <FontAwesomeIcon icon={faPlus} /> Insert Cell Above
+                                </button>
+                                </NavDropdown.Item>
+
+                                <NavDropdown.Item href="#action/3.1">
+                                <button className="btn" title="cut selected cell" >
+                                    <FontAwesomeIcon icon={faCut} /> Cut Selected Cell
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="copy selected cells" >
-                                    <FontAwesomeIcon icon={faCopy} /> Copy Selected Cells
+                                <button className="btn" title="copy selected cell" >
+                                    <FontAwesomeIcon icon={faCopy} /> Copy Selected Cell
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="past selected cells below" >
-                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cells Below
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="past selected cells above" >
-                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cells Above
+                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cell Below
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="move selected cells up" >
-                                    <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cells Up
+                                    <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cell Up
                                 </button>
                                 </NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">

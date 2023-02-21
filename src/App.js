@@ -6,6 +6,7 @@ import HeaderComponent from './Comonents/HeaderComponent';
 import CellComponent from './Comonents/CellComponent';
 
 import InsertCellBelow from './Utils/InsertCellBelow';
+import InsertCellAbove from './Utils/InsertCellAbove';
 
 
 // import run from './Comonents/lib';
@@ -32,6 +33,7 @@ class App extends React.Component {
     this.run = this.run.bind(this);
     this.changeActiveCellIndex = this.changeActiveCellIndex.bind(this);
     this.InsertCellBelowHandler = this.InsertCellBelowHandler.bind(this);
+    this.InsertCellAboveHandler = this.InsertCellAboveHandler.bind(this);
   }
 
 
@@ -128,6 +130,9 @@ class App extends React.Component {
   InsertCellBelowHandler = (cellIndex) => {
     InsertCellBelow({ 'this_component': this, 'force': true, 'cellIndex': cellIndex });
   }
+  InsertCellAboveHandler = (cellIndex) =>{
+    InsertCellAbove({ 'this_component': this, 'force': true, 'cellIndex': cellIndex });
+  }
 
 
   render = () => {
@@ -135,7 +140,7 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <HeaderComponent cellIndex={this.state.active_cell_index} InsertCellBelowHandler={this.InsertCellBelowHandler}></HeaderComponent>
+        <HeaderComponent cellIndex={this.state.active_cell_index} InsertCellBelowHandler={this.InsertCellBelowHandler} InsertCellAboveHandler = {this.InsertCellAboveHandler}></HeaderComponent>
         {/* <button value={'Add Cell'}  onClick={ (e)=>{ this.setState({'editorsValue' : [...this.state.editorsValue,''] });}} >Add Cell</button> */}
         <div id="notebook_panel">
           <div id="notebook">
