@@ -12,19 +12,20 @@ class App extends React.Component {
     this.state = {
       result: null,
       cellContext_data: [{ 
-        cellindex_value: 0,
-        output: []}],
+                          cellindex_value: 0,
+                          output: []}],
       run_all: false,
       // cellindex_value: 0,
       editorsValue: [`for(var i = 0;i<10 ; i++){
         show(i);
         }`],
-      editorsOutput: [],
       rows: 5,
+      active_cell_index : 0
     }
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.run = this.run.bind(this);
+    this.changeActiveCellIndex = this.changeActiveCellIndex.bind(this);
 
   }
 
@@ -37,39 +38,6 @@ class App extends React.Component {
 
 
   }
-
-  // run = (cellIndex, this_component) => {
-
-  //   global.show =  function (data) {
-  //     let all_results = this_component.state.cellContext_data[cellIndex];  //its dict inside list   [{cellindex},]
-  //     if (all_results["initial_run"] === true) {  // all_resukt is dict
-  //       // initial_run is true so there is no perior output so directly set new output
-  //       let cell_output = all_results["output"].concat(data); //[...,data];
-  //       const cellContext = {
-  //         initial_run: false,
-  //         cellindex_value: cellIndex,
-  //         output : cell_output
-  //       };
-
-  //       this_component.setState(prevState => {
-  //         const newCellContextData = [...prevState.cellContext_data];
-  //         newCellContextData[cellIndex] = cellContext;
-  //         console.log('after setup====',newCellContextData);
-  //         return { cellContext_data: newCellContextData };
-  //       });
-
-  //     }
-  //     else {
-  //       console.log('initial run is false========================');
-  //     }
-  //   }
-
-  //   // execute js code here
-  //   let code = this_component.state.editorsValue[cellIndex];
-  //   global.eval(code);
-
-  // }
-
 
 
   run = (cellIndex, this_component) => {
@@ -95,12 +63,6 @@ class App extends React.Component {
       });
     
   };
-  
-  
-
-
-
-  
   
 
   evalCode = (cellIndex) => {
@@ -172,8 +134,10 @@ class App extends React.Component {
 
     }
 
+  }
 
-
+  changeActiveCellIndex =(cellIndex)=>{
+    this.setState({active_cell_index:cellIndex});
   }
 
 
@@ -189,13 +153,10 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.editorsValue.map((item, index) => {
-                  return <CellComponent rows={this.state.rows} key={index} cellindex={index} editorsValue={this.state.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} />
+                  return <CellComponent rows={this.state.rows} key={index} cellindex={index} editorsValue={this.state.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []}  active_cell_index={this.state.active_cell_index} changeActiveCellIndex = {this.changeActiveCellIndex}/>
                 })
               }
-
             </div>
-
-
           </div>
         </div>
       </div>

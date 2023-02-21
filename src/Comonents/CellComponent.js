@@ -7,11 +7,11 @@ import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 
-
 const CellComponent = (props) => {
 
+  
   return (
-    <div className='jupyter-cell cell selected'>
+    <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e)=>{ props.changeActiveCellIndex(props.cellindex) }}>
       <div style={{ display: 'flex' }}>
         <div className="prompt_container">
           <div className="prompt input_prompt">
@@ -48,7 +48,7 @@ const CellComponent = (props) => {
           <div className="output_area">
             <div className="run_this_cell"></div>
             <div className="prompt output_prompt">
-              <bdi>Out[16]:</bdi>
+              <bdi>Out[{props.cellindex}]:</bdi>
             </div>
             <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
               <div>
