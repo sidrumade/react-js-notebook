@@ -5,32 +5,22 @@ import 'prismjs/themes/prism.css';
 import '../cellstyle.css'
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 
 
 const CellComponent = (props) => {
 
   return (
-    <div className='jupyter-cell'>
+    <div className='jupyter-cell cell selected'>
       <div style={{ display: 'flex' }}>
-        <Button variant="outline-secondary" size="sm" style={{
-          borderRadius: "50%",
-          height: "3em",
-          marginRight: "1px",
-          transition: "all 0.2s ease-out",
-          "&:hover": {
-            backgroundColor: "#007bff",
-            cursor: "pointer",
-            boxShadow: "0 0 10px rgba(0, 123, 255, 0.5)"
-          },
-          "&:active": {
-            backgroundColor: "#0062cc",
-            boxShadow: "none"
-          }
-        }}
-        >
-          <FontAwesomeIcon icon={faPlay} />
-        </Button>
+        <div className="prompt_container">
+          <div className="prompt input_prompt">
+            <bdi>In</bdi>&nbsp;[{props.cellindex + 1}]:
+          </div>
+          <div className="run_this_cell" title="Run this cell">
+            <FontAwesomeIcon icon={faStepForward} />
+          </div>
+        </div>
         <CodeEditor
           value={props.editorsValue[props.cellindex]}
           rows={props.rows}
@@ -46,11 +36,28 @@ const CellComponent = (props) => {
           }}
         />
       </div>
-      <div className='output cell_output_block'>
+      {/* <div className='output cell_output_block'>
         <div className='output_area'>
           {props.output.map((value, index) => {
             return <div className='output_subarea output_text output_result' key={index}><pre>{value}</pre></div>
           })}
+        </div>
+      </div> */}
+      <div className="output_wrapper">
+        <div className="output output_scroll">
+          <div className="output_area">
+            <div className="run_this_cell"></div>
+            <div className="prompt output_prompt">
+              <bdi>Out[16]:</bdi>
+            </div>
+            <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
+              <div>
+              {props.output.map((value, index) => {
+              return <pre key={index}>{value}</pre>
+              })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
