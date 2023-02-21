@@ -2,7 +2,7 @@ const InsertCellBelow = (props)=>{
 
     const cellIndex =  props.cellIndex ;
     const cellContext = {
-        cellindex_value: cellIndex,
+        cellindex_value: cellIndex+1,
         output : [],
         editorsValue : '',
         rows : 5
