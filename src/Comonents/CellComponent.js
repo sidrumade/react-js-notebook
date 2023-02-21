@@ -36,14 +36,8 @@ const CellComponent = (props) => {
           }}
         />
       </div>
-      {/* <div className='output cell_output_block'>
-        <div className='output_area'>
-          {props.output.map((value, index) => {
-            return <div className='output_subarea output_text output_result' key={index}><pre>{value}</pre></div>
-          })}
-        </div>
-      </div> */}
-      <div className="output_wrapper">
+      {
+        props.output.length > 0 ? (<div className="output_wrapper" >
         <div className="output output_scroll">
           <div className="output_area">
             <div className="run_this_cell"></div>
@@ -59,11 +53,10 @@ const CellComponent = (props) => {
             </div>
           </div>
         </div>
-      </div>
+      </div>) : null }
+      
 
     </div>
-
-
   );
 }
 

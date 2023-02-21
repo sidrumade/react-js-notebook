@@ -249,6 +249,7 @@ div.output_text {
 /* *selected cell */
 div.cell.selected, div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
+  border-left: solid blue;
 }
 div.cell {
   display: -webkit-box;
