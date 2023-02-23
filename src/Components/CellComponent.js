@@ -57,8 +57,6 @@ const CellComponent = (props) => {
           </div>
         </div>
       </div>) : null }
-      
-
     </div>
   );
 }

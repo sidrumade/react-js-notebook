@@ -2,8 +2,8 @@
 import React from 'react';
 import './App.css';
 import './notebook.css';
-import HeaderComponent from './Comonents/HeaderComponent';
-import CellComponent from './Comonents/CellComponent';
+import HeaderComponent from './Components/HeaderComponent';
+import CellComponent from './Components/CellComponent';
 
 import InsertCellBelow from './Utils/InsertCellBelow';
 import InsertCellAbove from './Utils/InsertCellAbove';
@@ -11,22 +11,30 @@ import MoveCellDown from './Utils/MoveCellDown';
 import MoveCellUp from './Utils/MoveCellUp';
 import DeleteCell from './Utils/DeleteCell';
 
+import CellPlot from './Components/CellPlot';
 
 // import run from './Comonents/lib';
 class App extends React.Component {
 
   constructor(props) {
     super(props);
+    this.containerRef = React.createRef();
+
     this.state = {
       result: null,
       cellContext_data: [{
         cellindex_value: 0,
         output: [],
-        editorsValue: `for(var i = 0;i<10 ; i++){
-                            show(i);
-                            }`,
+        editorsValue: `var data = [{"x": [1, 2, 3], "y": [2, 6, 3], "type": "scatter", "mode": "lines+markers", "marker": {"color": "red"}}, {"type": "bar", "x": [1, 2, 3], "y": [2, 5, 3]}];
+
+        var layout = {"width": 320, "height": 240, "title": "A Fancy Plot"} ;
+        show_graph(data,layout);`,
         rows: 5,
-        error: ''
+        error: '',
+        plotly_input :{'data' : [{"x": [1, 2, 3], "y": [2, 6, 3], "type": "scatter", "mode": "lines+markers", "marker": {"color": "red"}}, {"type": "bar", "x": [1, 2, 3], "y": [2, 5, 3]}],
+        layout : {"width": 320, "height": 240, "title": "A Fancy Plot"} }
+
+
       }],
       run_all: false,
       active_cell_index: 0
@@ -41,6 +49,8 @@ class App extends React.Component {
     this.MoveCellUpHandler = this.MoveCellUpHandler.bind(this);
     this.DeleteCellHandler = this.DeleteCellHandler.bind(this);
   }
+  
+
 
 
   handleEditorChange = (newValue, cellindex) => {
@@ -58,24 +68,51 @@ class App extends React.Component {
 
   run = (cellIndex, this_component) => {
     let output = [];
+    let plotly_output = [];
+
     global.show = function (data) {
       output.push(data);
     };
 
+    global.show_graph = (data,layout) =>{
+      plotly_output.push({'data':data,'layout':layout});
+    }
+
+    
+
     // execute js code here
     let code = this_component.state.cellContext_data[cellIndex].editorsValue;
+
+    //execute code first 
     global.eval(code);
 
-    let cellContext = this_component.state.cellContext_data[cellIndex];
+    if(plotly_output.length === 0){
+      let cellContext = this_component.state.cellContext_data[cellIndex];
+      cellContext['output'] = output;
 
-
-    cellContext['output'] = output;
-
-    this_component.setState(prevState => {
-      const newCellContextData = [...prevState.cellContext_data];
-      newCellContextData[cellIndex] = cellContext;
-      return { cellContext_data: newCellContextData };
-    });
+      this_component.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
+    }
+    else{
+      console.log('hhhhhhhhhhhhhhhhhhhhhhhhhh');
+      
+      const data = plotly_output[0].data;
+      const layout = plotly_output[0].layout;
+      // createGraph(data, layout, container);
+      let cellContext = this_component.state.cellContext_data[cellIndex];
+      cellContext['plotly_input']['data'] = data;
+      cellContext['plotly_input']['layout'] = layout;
+      this_component.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      },()=>{       console.log('after update',this_component.state.cellContext_data);    });
+      
+      
+    }
 
   };
 
@@ -174,6 +211,18 @@ class App extends React.Component {
             </div>
           </div>
         </div>
+
+        <div>
+        { this.state.cellContext_data.map((cellData) => (
+          cellData.plotly_input ? <CellPlot 
+            key={cellData.cellindex_value}
+            cellindex_value={cellData.cellindex_value}
+            plotly_input={cellData.plotly_input}
+          /> : null
+        ))}
+      </div>
+
+
       </div>
     );
   };
