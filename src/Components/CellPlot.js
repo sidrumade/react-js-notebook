@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Plot from 'plotly.js';
+import * as d3 from "d3";
+
 
 class CellPlot extends Component {
   constructor(props) {

@@ -12,7 +12,6 @@ import * as d3 from "d3";
 
 
 const CellComponent = (props) => {  
-  console.log('props===',props)
   return (
     <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e)=>{ props.changeActiveCellIndex(props.cellindex) }}>
       <div style={{ display: 'flex' }}>

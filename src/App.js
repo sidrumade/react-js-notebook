@@ -2,9 +2,9 @@
 import React from 'react';
 import './App.css';
 import './notebook.css';
+import * as d3 from "d3";
 import HeaderComponent from './Components/HeaderComponent';
 import CellComponent from './Components/CellComponent';
-
 import InsertCellBelow from './Utils/InsertCellBelow';
 import InsertCellAbove from './Utils/InsertCellAbove';
 import MoveCellDown from './Utils/MoveCellDown';
@@ -172,6 +172,8 @@ class App extends React.Component {
       plotly_output.push({ 'data': data, 'layout': layout });
     }
 
+    global.d3 = d3;
+
 
 
     // execute js code here
@@ -202,7 +204,7 @@ class App extends React.Component {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
         return { cellContext_data: newCellContextData };
-      }, () => { console.log('after update', this_component.state.cellContext_data); });
+      }, () => { });
 
       
     }
