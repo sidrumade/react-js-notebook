@@ -6,8 +6,13 @@ import '../cellstyle.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 import Alert from 'react-bootstrap/Alert';
+import CellPlot from './CellPlot';
+import * as d3 from "d3";
+
+
 
 const CellComponent = (props) => {  
+  console.log('props===',props)
   return (
     <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e)=>{ props.changeActiveCellIndex(props.cellindex) }}>
       <div style={{ display: 'flex' }}>
@@ -57,6 +62,19 @@ const CellComponent = (props) => {
           </div>
         </div>
       </div>) : null }
+
+      <div>
+        { 
+          props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot 
+            key={props.cellindex}
+            cellindex_value={props.cellindex}
+            plotly_input={props.plotly_input}
+          /> : null
+        }
+      </div>
+      
+
+
     </div>
   );
 }

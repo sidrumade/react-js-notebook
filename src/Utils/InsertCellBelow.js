@@ -5,7 +5,8 @@ const InsertCellBelow = (props)=>{
         cellindex_value: cellIndex+1,
         output : [],
         editorsValue : '',
-        rows : 5
+        rows : 5,
+        plotly_input : {}
       };
 
     props.this_component.setState(prevState => {

@@ -11,7 +11,7 @@ import MoveCellDown from './Utils/MoveCellDown';
 import MoveCellUp from './Utils/MoveCellUp';
 import DeleteCell from './Utils/DeleteCell';
 
-import CellPlot from './Components/CellPlot';
+
 
 // import run from './Comonents/lib';
 class App extends React.Component {
@@ -31,8 +31,10 @@ class App extends React.Component {
         show_graph(data,layout);`,
         rows: 5,
         error: '',
-        plotly_input :{'data' : [{"x": [1, 2, 3], "y": [2, 6, 3], "type": "scatter", "mode": "lines+markers", "marker": {"color": "red"}}, {"type": "bar", "x": [1, 2, 3], "y": [2, 5, 3]}],
-        layout : {"width": 320, "height": 240, "title": "A Fancy Plot"} }
+        plotly_input: {
+          'data': [{ "x": [1, 2, 3], "y": [2, 6, 3], "type": "scatter", "mode": "lines+markers", "marker": { "color": "red" } }, { "type": "bar", "x": [1, 2, 3], "y": [2, 5, 3] }],
+          'layout': { "width": 320, "height": 240, "title": "A Fancy Plot" }
+        }
 
 
       }],
@@ -49,7 +51,7 @@ class App extends React.Component {
     this.MoveCellUpHandler = this.MoveCellUpHandler.bind(this);
     this.DeleteCellHandler = this.DeleteCellHandler.bind(this);
   }
-  
+
 
 
 
@@ -74,11 +76,11 @@ class App extends React.Component {
       output.push(data);
     };
 
-    global.show_graph = (data,layout) =>{
-      plotly_output.push({'data':data,'layout':layout});
+    global.show_graph = (data, layout) => {
+      plotly_output.push({ 'data': data, 'layout': layout });
     }
 
-    
+
 
     // execute js code here
     let code = this_component.state.cellContext_data[cellIndex].editorsValue;
@@ -86,7 +88,7 @@ class App extends React.Component {
     //execute code first 
     global.eval(code);
 
-    if(plotly_output.length === 0){
+    if (plotly_output.length === 0) {
       let cellContext = this_component.state.cellContext_data[cellIndex];
       cellContext['output'] = output;
 
@@ -96,9 +98,8 @@ class App extends React.Component {
         return { cellContext_data: newCellContextData };
       });
     }
-    else{
-      console.log('hhhhhhhhhhhhhhhhhhhhhhhhhh');
-      
+    else {
+
       const data = plotly_output[0].data;
       const layout = plotly_output[0].layout;
       // createGraph(data, layout, container);
@@ -109,8 +110,8 @@ class App extends React.Component {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
         return { cellContext_data: newCellContextData };
-      },()=>{       console.log('after update',this_component.state.cellContext_data);    });
-      
+      }, () => { console.log('after update', this_component.state.cellContext_data); });
+
       
     }
 
@@ -156,7 +157,8 @@ class App extends React.Component {
         cellindex_value: cellIndex,
         output: [],
         editorsValue: '',
-        rows: 5
+        rows: 5,
+        plotly_input : {}
       };
 
       this.evalCode(cellIndex);
@@ -173,16 +175,16 @@ class App extends React.Component {
   InsertCellBelowHandler = (cellIndex) => {
     InsertCellBelow({ 'this_component': this, 'force': true, 'cellIndex': cellIndex });
   }
-  InsertCellAboveHandler = (cellIndex) =>{
+  InsertCellAboveHandler = (cellIndex) => {
     InsertCellAbove({ 'this_component': this, 'force': true, 'cellIndex': cellIndex });
   }
-  MoveCellDownHandler = (cellIndex) =>{
+  MoveCellDownHandler = (cellIndex) => {
     MoveCellDown({ 'this_component': this, 'cellIndex': cellIndex });
   }
-  MoveCellUpHandler = (cellIndex) =>{
+  MoveCellUpHandler = (cellIndex) => {
     MoveCellUp({ 'this_component': this, 'cellIndex': cellIndex });
   }
-  DeleteCellHandler = (cellIndex) =>{
+  DeleteCellHandler = (cellIndex) => {
     DeleteCell({ 'this_component': this, 'cellIndex': cellIndex });
   }
 
@@ -192,12 +194,12 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <HeaderComponent cellIndex={this.state.active_cell_index} 
-        InsertCellBelowHandler={this.InsertCellBelowHandler} 
-        InsertCellAboveHandler = {this.InsertCellAboveHandler} 
-        MoveCellDownHandler = {this.MoveCellDownHandler}
-        MoveCellUpHandler = {this.MoveCellUpHandler}
-        DeleteCellHandler = {this.DeleteCellHandler}
+        <HeaderComponent cellIndex={this.state.active_cell_index}
+          InsertCellBelowHandler={this.InsertCellBelowHandler}
+          InsertCellAboveHandler={this.InsertCellAboveHandler}
+          MoveCellDownHandler={this.MoveCellDownHandler}
+          MoveCellUpHandler={this.MoveCellUpHandler}
+          DeleteCellHandler={this.DeleteCellHandler}
         ></HeaderComponent>
         {/* <button value={'Add Cell'}  onClick={ (e)=>{ this.setState({'editorsValue' : [...this.state.editorsValue,''] });}} >Add Cell</button> */}
         <div id="notebook_panel">
@@ -205,14 +207,14 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error = {item.error} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input = {item.plotly_input}/>
                 })
               }
             </div>
           </div>
         </div>
 
-        <div>
+        {/* <div>
         { this.state.cellContext_data.map((cellData) => (
           cellData.plotly_input ? <CellPlot 
             key={cellData.cellindex_value}
@@ -220,7 +222,7 @@ class App extends React.Component {
             plotly_input={cellData.plotly_input}
           /> : null
         ))}
-      </div>
+      </div> */}
 
 
       </div>

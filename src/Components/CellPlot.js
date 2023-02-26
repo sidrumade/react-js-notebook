@@ -11,6 +11,10 @@ class CellPlot extends Component {
     const { cellindex_value, plotly_input } = this.props;
     Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
   }
+  componentDidMount() {
+    const { cellindex_value, plotly_input } = this.props;
+    Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
+  }
 
   render() {
     const { cellindex_value } = this.props;
