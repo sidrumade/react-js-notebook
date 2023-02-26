@@ -13,14 +13,17 @@ import DeleteCell from './Utils/DeleteCell';
 
 import * as Plotly from 'plotly.js';
 
+import { saveAs } from 'file-saver';
+import FileExplorer from './Components/FileExplorer';
+
 // import run from './Comonents/lib';
 class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.containerRef = React.createRef();
 
-    this.state = {
+    const stateData = localStorage.getItem('stateData');
+    this.state = stateData ? JSON.parse(stateData) : {
       result: null,
       cellContext_data: [{
         cellindex_value: 0,
@@ -131,8 +134,14 @@ class App extends React.Component {
 
       }],
       run_all: false,
-      active_cell_index: 0
+      active_cell_index: 0,
+
+      folders: [],
+      currentFolder: null,
     }
+
+   
+
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.run = this.run.bind(this);
@@ -143,6 +152,11 @@ class App extends React.Component {
     this.MoveCellUpHandler = this.MoveCellUpHandler.bind(this);
     this.DeleteCellHandler = this.DeleteCellHandler.bind(this);
   }
+
+  componentDidUpdate() {
+    localStorage.setItem("stateData", JSON.stringify(this.state));
+  }
+
 
 
 
@@ -284,6 +298,24 @@ class App extends React.Component {
     DeleteCell({ 'this_component': this, 'cellIndex': cellIndex });
   }
 
+  handleAddFolder = (newFolder) => {
+    this.setState((prevState) => ({
+      folders: [...prevState.folders, newFolder],
+    }));
+  };
+
+  handleFolderClick = (folder) => {
+    this.setState({ currentFolder: folder });
+  };
+
+  handleSaveClick = () => {
+    const stateToSave = this.state;
+    const blob = new Blob([JSON.stringify(stateToSave)], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blob, 'program1.jsnb');
+  };
+
 
   render = () => {
 
@@ -297,7 +329,13 @@ class App extends React.Component {
           MoveCellUpHandler={this.MoveCellUpHandler}
           DeleteCellHandler={this.DeleteCellHandler}
         ></HeaderComponent>
-        {/* <button value={'Add Cell'}  onClick={ (e)=>{ this.setState({'editorsValue' : [...this.state.editorsValue,''] });}} >Add Cell</button> */}
+
+        <button value={'Add Cell'}  onClick={this.handleSaveClick} >Save</button>
+        <FileExplorer/>
+
+
+
+
         <div id="notebook_panel">
           <div id="notebook">
             <div id="notebook-container" className='container'>
