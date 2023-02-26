@@ -186,7 +186,7 @@ class App extends React.Component {
     if (plotly_output.length === 0) {
       let cellContext = this_component.state.cellContext_data[cellIndex];
       cellContext['output'] = output;
-
+      cellContext[ 'plotly_input'] = plotly_output;
       this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
@@ -219,6 +219,7 @@ class App extends React.Component {
 
       let cellContext = this.state.cellContext_data[cellIndex];
       cellContext['error'] = '';
+
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
@@ -309,15 +310,6 @@ class App extends React.Component {
           </div>
         </div>
 
-        {/* <div>
-        { this.state.cellContext_data.map((cellData) => (
-          cellData.plotly_input ? <CellPlot 
-            key={cellData.cellindex_value}
-            cellindex_value={cellData.cellindex_value}
-            plotly_input={cellData.plotly_input}
-          /> : null
-        ))}
-      </div> */}
 
 
       </div>
