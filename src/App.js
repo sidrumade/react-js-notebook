@@ -11,7 +11,7 @@ import MoveCellDown from './Utils/MoveCellDown';
 import MoveCellUp from './Utils/MoveCellUp';
 import DeleteCell from './Utils/DeleteCell';
 
-
+import * as Plotly from 'plotly.js';
 
 // import run from './Comonents/lib';
 class App extends React.Component {
@@ -173,6 +173,7 @@ class App extends React.Component {
     }
 
     global.d3 = d3;
+    global.Plotly = Plotly;
 
 
 

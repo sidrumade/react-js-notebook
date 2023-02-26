@@ -20,7 +20,7 @@ class CellPlot extends Component {
 
   render() {
     const { cellindex_value } = this.props;
-    return <div id={cellindex_value} ref={this.plotRef}></div>;
+    return <div id={ `graph_plan_${cellindex_value}` } ref={this.plotRef}></div>;
   }
 }
 
