@@ -25,6 +25,14 @@
   
 
 .dropdown-menu{
-  height: 50vh;
+  max-height: 50vh;
   overflow: auto;
+}
+
+
+.notebook_lbl{
+  margin: unset;
+  font-family: unset;
+  font-size: unset;
+  line-height: unset;
 }

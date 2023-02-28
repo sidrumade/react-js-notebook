@@ -12,33 +12,32 @@ const HeaderComponent = (props) => {
         <>
             <Navbar bg="light" expand="lg" sticky="top">
                 <Container>
-                    <Navbar.Brand href="#home">
+                    <Navbar.Brand href="#home" >
                         <img
                             alt=""
                             src="./logo192.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
+                            
                         />{' '}
-                        React Bootstrap
+                        <input type='text' value={props.notebook_name} className="notebook_lbl" onChange={(e)=>props.notebookNameChangeHandler(e)}></input>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <NavDropdown title="File" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">New Notebook</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Open...</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Make a Copy...</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Save as...</NavDropdown.Item>
+                                <NavDropdown.Item >New Notebook</NavDropdown.Item>
+                                <NavDropdown.Item >Open...
+                                {props.childrens}
+                                </NavDropdown.Item>
+                                <NavDropdown.Item >Make a Copy...</NavDropdown.Item>
+                                <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>
                             </NavDropdown>
-                            <NavDropdown title="View" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Toggle Header</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Toggle Toolbar</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Toggle Line Numbers</NavDropdown.Item>
-                            </NavDropdown>
+
                             <NavDropdown title="Tools" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="save and checkpoint">
+                                <button className="btn" title="save and checkpoint" >
                                     <FontAwesomeIcon icon={faSave} /> Save
                                 </button>
                                 </NavDropdown.Item>
@@ -53,21 +52,7 @@ const HeaderComponent = (props) => {
                                 </button>
                                 </NavDropdown.Item>
 
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="cut selected cell" >
-                                    <FontAwesomeIcon icon={faCut} /> Cut Selected Cell
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="copy selected cell" >
-                                    <FontAwesomeIcon icon={faCopy} /> Copy Selected Cell
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="past selected cells below" >
-                                    <FontAwesomeIcon icon={faPaste} /> Past Selected Cell Below
-                                </button>
-                                </NavDropdown.Item>
+                              
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="move selected cells up" onClick={(e)=>props.MoveCellUpHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cell Up
@@ -83,16 +68,7 @@ const HeaderComponent = (props) => {
                                     <FontAwesomeIcon icon={faPlay} /> Run Cell, Select Below
                                 </button>
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="interrupt the kernel" >
-                                    <FontAwesomeIcon icon={faStop} /> Interrupt the Kernel
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="restart the kernel (with dialog)" >
-                                    <FontAwesomeIcon icon={faRepeat} /> Restart the Kernel (with dialog)
-                                </button>
-                                </NavDropdown.Item>
+                                
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faRemove} /> Delete Cell

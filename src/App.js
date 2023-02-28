@@ -13,8 +13,10 @@ import DeleteCell from './Utils/DeleteCell';
 
 import * as Plotly from 'plotly.js';
 
+import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
 import FileExplorer from './Components/FileExplorer';
+
 
 // import run from './Comonents/lib';
 class App extends React.Component {
@@ -22,9 +24,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const stateData = localStorage.getItem('stateData');
-    this.state = stateData ? JSON.parse(stateData) : {
-      result: null,
+    // const stateData = localStorage.getItem('stateData');
+    this.state = {
+      notebook_name: 'untitled',
       cellContext_data: [{
         cellindex_value: 0,
         output: [],
@@ -151,6 +153,9 @@ class App extends React.Component {
     this.MoveCellDownHandler = this.MoveCellDownHandler.bind(this);
     this.MoveCellUpHandler = this.MoveCellUpHandler.bind(this);
     this.DeleteCellHandler = this.DeleteCellHandler.bind(this);
+    this.handleSaveClick = this.handleSaveClick.bind(this);
+    this.notebookNameChangeHandler = this.notebookNameChangeHandler.bind(this);
+
   }
 
   componentDidUpdate() {
@@ -308,12 +313,19 @@ class App extends React.Component {
     this.setState({ currentFolder: folder });
   };
 
+  notebookNameChangeHandler = (e) => {
+    const notebook_name = e.target.value;
+    this.setState({'notebook_name':  notebook_name })
+  }
+
   handleSaveClick = () => {
     const stateToSave = this.state;
+    const notebook_name = this.state.notebook_name;
     const blob = new Blob([JSON.stringify(stateToSave)], {
       type: 'text/plain;charset=utf-8',
     });
-    saveAs(blob, 'program1.jsnb');
+
+    saveAs(blob, `${notebook_name}.jsnb`);
   };
 
 
@@ -328,9 +340,11 @@ class App extends React.Component {
           MoveCellDownHandler={this.MoveCellDownHandler}
           MoveCellUpHandler={this.MoveCellUpHandler}
           DeleteCellHandler={this.DeleteCellHandler}
+          handleSaveClick ={this.handleSaveClick}
+          notebook_name = {this.state.notebook_name}
+          notebookNameChangeHandler = {this.notebookNameChangeHandler}
         ></HeaderComponent>
 
-        <button value={'Add Cell'}  onClick={this.handleSaveClick} >Save</button>
         <FileExplorer/>
 
 
