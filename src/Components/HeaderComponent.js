@@ -29,7 +29,6 @@ const HeaderComponent = (props) => {
                             <NavDropdown title="File" id="basic-nav-dropdown">
                                 <NavDropdown.Item >New Notebook</NavDropdown.Item>
                                 <NavDropdown.Item >Open...
-                                {props.childrens}
                                 </NavDropdown.Item>
                                 <NavDropdown.Item >Make a Copy...</NavDropdown.Item>
                                 <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>
