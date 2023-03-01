@@ -12,7 +12,7 @@ const HeaderComponent = (props) => {
         <>
             <Navbar bg="light" expand="lg" sticky="top">
                 <Container>
-                    <Navbar.Brand href="#home" >
+                    <Navbar.Brand href="#" >
                         <img
                             alt=""
                             src="/logo192.png"
