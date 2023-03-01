@@ -23,9 +23,23 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-
-    // const stateData = localStorage.getItem('stateData');
-    this.state = {
+    this.fileInputRef = React.createRef();
+    const queryParams = new URLSearchParams(window.location.search);
+    const notebookHash = queryParams.get('notebook_hash');
+    let stateData = null;
+    let notebook_data = {};
+    if(notebookHash == undefined){
+      stateData = null;
+    }
+    else{
+      stateData = localStorage.getItem(`stateData#${notebookHash}`);
+      notebook_data = JSON.parse(stateData);
+      if(notebook_data.notebookHash === notebookHash ){
+        
+      }
+    }
+    this.state = stateData !== null ? JSON.parse(stateData) : {
+      notebook_hash: generateHash(),
       notebook_name: 'untitled',
       cellContext_data: [{
         cellindex_value: 0,
@@ -142,6 +156,7 @@ class App extends React.Component {
       currentFolder: null,
     }
 
+
    
 
     this.handleEditorChange = this.handleEditorChange.bind(this);
@@ -161,8 +176,6 @@ class App extends React.Component {
   componentDidUpdate() {
     localStorage.setItem("stateData", JSON.stringify(this.state));
   }
-
-
 
 
 
@@ -342,10 +355,13 @@ class App extends React.Component {
           DeleteCellHandler={this.DeleteCellHandler}
           handleSaveClick ={this.handleSaveClick}
           notebook_name = {this.state.notebook_name}
+          notebookHash = {this.state.notebookHash}
           notebookNameChangeHandler = {this.notebookNameChangeHandler}
-        ></HeaderComponent>
+        >
+        <FileExplorer notebook_name = {this.state.notebook_name} notebook_hash= {this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 
-        <FileExplorer/>
+        </HeaderComponent>
+
 
 
 
@@ -361,6 +377,7 @@ class App extends React.Component {
             </div>
           </div>
         </div>
+        
 
 
 

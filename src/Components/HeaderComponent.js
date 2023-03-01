@@ -15,7 +15,7 @@ const HeaderComponent = (props) => {
                     <Navbar.Brand href="#home" >
                         <img
                             alt=""
-                            src="./logo192.png"
+                            src="/logo192.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
@@ -28,19 +28,18 @@ const HeaderComponent = (props) => {
                         <Nav className="me-auto">
                             <NavDropdown title="File" id="basic-nav-dropdown">
                                 <NavDropdown.Item >New Notebook</NavDropdown.Item>
-                                <NavDropdown.Item >Open...
-                                </NavDropdown.Item>
+                                {props.children}
                                 <NavDropdown.Item >Make a Copy...</NavDropdown.Item>
                                 <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>
                             </NavDropdown>
 
                             <NavDropdown title="Tools" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item href="save">
                                 <button className="btn" title="save and checkpoint" >
                                     <FontAwesomeIcon icon={faSave} /> Save
                                 </button>
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item href="">
                                 <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faPlus} /> Insert Cell Below
                                 </button>
