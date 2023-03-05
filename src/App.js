@@ -17,7 +17,6 @@ import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
 import FileExplorer from './Components/FileExplorer';
 
-
 // import run from './Comonents/lib';
 class App extends React.Component {
 
@@ -174,7 +173,13 @@ class App extends React.Component {
   }
 
   componentDidUpdate() {
-    localStorage.setItem("stateData", JSON.stringify(this.state));
+    try{
+      localStorage.setItem("stateData", JSON.stringify(this.state));
+    }
+    catch{
+      console.log('Error in saving state.');
+      
+    }
   }
 
 
@@ -211,9 +216,22 @@ class App extends React.Component {
 
     // execute js code here
     let code = this_component.state.cellContext_data[cellIndex].editorsValue;
+    try{
+      //execute code first 
+      global.eval(code);
+    }
+    catch(error){
+      console.log('-----------fuck',error.toString());
+      let cellContext = this.state.cellContext_data[cellIndex];
+      cellContext['error'] = error.toString();
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
+      return 0;
+    }
 
-    //execute code first 
-    global.eval(code);
 
     if (plotly_output.length === 0) {
       let cellContext = this_component.state.cellContext_data[cellIndex];
@@ -247,9 +265,9 @@ class App extends React.Component {
 
   evalCode = (cellIndex) => {
     try {
-      this.run(cellIndex, this);
-
-      let cellContext = this.state.cellContext_data[cellIndex];
+      const out=this.run(cellIndex, this);
+      if(out != 0){
+        let cellContext = this.state.cellContext_data[cellIndex];
       cellContext['error'] = '';
 
       this.setState(prevState => {
@@ -257,8 +275,8 @@ class App extends React.Component {
         newCellContextData[cellIndex] = cellContext;
         return { cellContext_data: newCellContextData };
       });
-
-
+      }
+      
     } catch (error) {
 
       let cellContext = this.state.cellContext_data[cellIndex];
@@ -363,9 +381,6 @@ class App extends React.Component {
         </HeaderComponent>
 
 
-
-
-
         <div id="notebook_panel">
           <div id="notebook">
             <div id="notebook-container" className='container'>
@@ -377,9 +392,6 @@ class App extends React.Component {
             </div>
           </div>
         </div>
-        
-
-
 
       </div>
     );

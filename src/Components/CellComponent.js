@@ -11,10 +11,10 @@ import * as d3 from "d3";
 
 
 
-const CellComponent = (props) => {  
+const CellComponent = (props) => {
   return (
-    <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e)=>{ props.changeActiveCellIndex(props.cellindex) }}>
-      <div style={{ display: 'flex' }}>
+    <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e) => { props.changeActiveCellIndex(props.cellindex) }}>
+      <div style={{ display: 'flex' }} >
         <div className="prompt_container">
           <div className="prompt input_prompt">
             <bdi>In</bdi>&nbsp;[{props.cellindex + 1}]:
@@ -24,7 +24,7 @@ const CellComponent = (props) => {
           </div>
         </div>
         <CodeEditor
-          value={props.editorsValue || '' }
+          value={props.editorsValue || ''}
           rows={props.rows || 5}
           onValueChange={(newValue) => props.handleEditorChange(newValue, props.cellindex)}
           highlight={code => Prism.highlight(code, Prism.languages.javascript)}
@@ -40,38 +40,45 @@ const CellComponent = (props) => {
       </div>
       {
         props.error ? (<Alert key='danger' variant='danger'>
-        {props.error}
+          {props.error}
         </Alert>) : null
       }
       {
         props.output.length > 0 ? (<div className="output_wrapper" >
-        <div className="output output_scroll">
-          <div className="output_area">
-            <div className="run_this_cell"></div>
-            <div className="prompt output_prompt">
-              <bdi>Out[{props.cellindex}]:</bdi>
-            </div>
-            <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
-              <div>
-              {props.output.map((value, index) => {
-              return <pre key={index}>{JSON.stringify(value)}</pre>
-              })}
+          <div className="output output_scroll">
+            <div className="output_area">
+              <div className="run_this_cell"></div>
+              <div className="prompt output_prompt">
+                <bdi>Out[{props.cellindex}]:</bdi>
+              </div>
+              <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
+                <div>
+                  {props.output.map((value, index) => {
+                    let outputString;
+                    try {
+                      outputString = JSON.stringify(value);
+                    } catch (err) {
+                      outputString = value;
+                      outputString = "Error: " + err.message;
+                    }
+                    return <pre key={index}>{outputString}</pre>;
+                  })}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>) : null }
+        </div>) : null}
 
       <div>
-        { 
-          props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot 
+        {
+          props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot
             key={props.cellindex}
             cellindex_value={props.cellindex}
             plotly_input={props.plotly_input}
           /> : null
         }
       </div>
-      
+
 
 
     </div>
