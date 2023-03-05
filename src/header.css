@@ -31,7 +31,9 @@
 
 
 .notebook_lbl{
-height: 1.2em;
-border: none;
-box-shadow: 1px 1px 3px #67e8ff inset;
+  height: 1.2em;
+  box-shadow: 1px 1px 3px #c7c9c9 inset;
+  padding: 1rem;
+  border: 1px solid #f8f9fa;
+  border-radius: 11px;
 }
