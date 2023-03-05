@@ -71,14 +71,10 @@ const HeaderComponent = (props) => {
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">HTML</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">Notebook(.jsnb)</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Javascript</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">PDF</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Kernel" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Interrupt</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">Restart</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Restart & Clear Output</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Restart & Run All</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link href="#help">Help</Nav.Link>
                             
