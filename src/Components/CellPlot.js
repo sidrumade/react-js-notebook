@@ -20,7 +20,17 @@ class CellPlot extends Component {
 
   render() {
     const { cellindex_value } = this.props;
-    return <div id={ `graph_plan_${cellindex_value}` } ref={this.plotRef}></div>;
+    return <div style={{'display':'flex' , 'minHeight': '400px'}}>
+    
+    <div className="prompt output_prompt">
+                <bdi>Out[{cellindex_value+1}]:</bdi>
+    </div>
+
+
+      <div id={ `graph_plan_${cellindex_value}` } ref={this.plotRef}>
+
+      </div>
+    </div>;
   }
 }
 

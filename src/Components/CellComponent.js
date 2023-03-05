@@ -68,7 +68,10 @@ const CellComponent = (props) => {
             </div>
           </div>
         </div>) : null}
+        
 
+
+      
       <div>
         {
           props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot
