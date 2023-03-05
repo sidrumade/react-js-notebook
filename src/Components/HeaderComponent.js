@@ -34,11 +34,6 @@ const HeaderComponent = (props) => {
                             </NavDropdown>
 
                             <NavDropdown title="Tools" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="save">
-                                <button className="btn" title="save and checkpoint" >
-                                    <FontAwesomeIcon icon={faSave} /> Save
-                                </button>
-                                </NavDropdown.Item>
                                 <NavDropdown.Item href="">
                                 <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faPlus} /> Insert Cell Below
