@@ -14,7 +14,7 @@
       border-bottom-color: transparent;
       border-left-color: transparent;
     padding: 3px 1px;
-    font-size: 12px;
+    font-size: .7rem;
     line-height: 1.42857143;
     border-radius: 2px;
     -webkit-user-select: none;
@@ -27,6 +27,7 @@
 .dropdown-menu{
   max-height: 50vh;
   overflow: auto;
+  font-size: .7rem;
 }
 
 
