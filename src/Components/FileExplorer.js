@@ -7,7 +7,7 @@ class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.fileInputRef = props.fileInputRef ;
-    this.notebook_name = props.notebook_name;
+    // this.notebook_name = props.notebook_name;
     this.notebook_hash = props.notebook_hash;
     this.state = {
       selectedFile: null,
@@ -25,8 +25,9 @@ class FileExplorer extends Component {
     fileReader.onload = (event) => {
       const fileContents = event.target.result;
       const stateFromFile = JSON.parse(fileContents);
+      const notebook_name = stateFromFile.notebook_name;
       localStorage.setItem(`stateData#${this.notebook_hash}`, JSON.stringify(stateFromFile));
-      let notebook_name = this.notebook_name;
+      console.log('================',notebook_name);
       if (notebook_name.trim() === ''){
         notebook_name = 'untitled'
       }
