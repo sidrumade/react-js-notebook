@@ -11,12 +11,24 @@ class CellPlot extends Component {
 
   componentDidUpdate() {
     const { cellindex_value, plotly_input } = this.props;
-    Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
+    try{
+      Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
+    }
+    catch(error){   
+      return;
+    }
   }
   componentDidMount() {
     const { cellindex_value, plotly_input } = this.props;
-    Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
+    try{
+      Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
+    }
+    catch(error){
+     
+      return;
+    }
   }
+
 
   render() {
     const { cellindex_value } = this.props;

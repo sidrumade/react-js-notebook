@@ -140,8 +140,6 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
       const hasMultipleLinesOrStatements = codeLines.length > 1;
       // Check if the code contains a call to show_graph()
       const hasShowGraphCall = /show_graph\s*\(/.test(code.replace(/\s/g, ''));
-      console.log(hasMultipleLinesOrStatements);
-      console.log(hasShowGraphCall);
 
       if ((hasMultipleLinesOrStatements && hasShowGraphCall)) {
         console.warn('show_graph() function call detected');
