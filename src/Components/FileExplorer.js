@@ -27,7 +27,6 @@ class FileExplorer extends Component {
       const stateFromFile = JSON.parse(fileContents);
       const notebook_name = stateFromFile.notebook_name;
       localStorage.setItem(`stateData#${this.notebook_hash}`, JSON.stringify(stateFromFile));
-      console.log('================',notebook_name);
       if (notebook_name.trim() === ''){
         notebook_name = 'untitled'
       }
