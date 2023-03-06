@@ -27,7 +27,7 @@ const HeaderComponent = (props) => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <NavDropdown title="File" id="basic-nav-dropdown">
-                                <NavDropdown.Item >New Notebook</NavDropdown.Item>
+                                <NavDropdown.Item onClick = { (e)=> {window.open(`/`, '_blank');} }>New Notebook</NavDropdown.Item>
                                 {props.children}
                                 <NavDropdown.Item >Make a Copy...</NavDropdown.Item>
                                 <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>

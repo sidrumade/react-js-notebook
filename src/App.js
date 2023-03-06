@@ -17,28 +17,30 @@ import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
 import FileExplorer from './Components/FileExplorer';
 
+
 // import run from './Comonents/lib';
 class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.fileInputRef = React.createRef();
-    const queryParams = new URLSearchParams(window.location.search);
-    const notebookHash = queryParams.get('notebook_hash');
-    let stateData = null;
-    let notebook_data = {};
-    if (notebookHash == undefined) {
-      stateData = null;
+    this.queryParams = new URLSearchParams(window.location.search);
+    this.notebookHash = this.queryParams.get('notebook_hash');
+    this.stateData = null;
+    this.notebook_data = {};
+    if (this.notebookHash == undefined) {
+      this.stateData = null;
+      this.notebookHash = generateHash()
     }
     else {
-      stateData = localStorage.getItem(`stateData#${notebookHash}`);
-      notebook_data = JSON.parse(stateData);
-      if (notebook_data.notebookHash === notebookHash) {
+      this.stateData = localStorage.getItem(`stateData#${this.notebookHash}`);
+      this.notebook_data = JSON.parse(this.stateData);
+      if (this.notebook_data.notebookHash === this.notebookHash) {
 
       }
     }
-    this.state = stateData !== null ? JSON.parse(stateData) : {
-      notebook_hash: generateHash(),
+    this.state = this.stateData !== null ? JSON.parse(this.stateData) : {
+      notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
       cellContext_data: [{
         cellindex_value: 0,
@@ -90,7 +92,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
 
   componentDidUpdate() {
     try {
-      localStorage.setItem("stateData", JSON.stringify(this.state));
+      localStorage.setItem(`stateData#${this.notebookHash}`, JSON.stringify(this.state));
     }
     catch {
       console.log('Error in saving state.');

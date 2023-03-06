@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import App from '../App';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-
+import OpenFile from '../Utils/OpenFile';
 
 class FileExplorer extends Component {
   constructor(props) {
@@ -19,19 +18,7 @@ class FileExplorer extends Component {
 
   handleOpenClick = () => {
     if (!this.state.selectedFile) return;
-
-    const fileReader = new FileReader();
-    fileReader.onload = (event) => {
-      const fileContents = event.target.result;
-      const stateFromFile = JSON.parse(fileContents);
-      const notebook_name = stateFromFile.notebook_name;
-      localStorage.setItem(`stateData#${this.notebook_hash}`, JSON.stringify(stateFromFile));
-      if (notebook_name.trim() === ''){
-        notebook_name = 'untitled'
-      }
-      window.open(`/${notebook_name}.jsnb/?notebook_hash=${this.notebook_hash}`, '_blank');
-    };
-    fileReader.readAsText(this.state.selectedFile);
+    OpenFile({ 'this_state' : this ,'notebook_hash': this.notebook_hash });
   };
 
   render() {
