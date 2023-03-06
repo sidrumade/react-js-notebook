@@ -87,6 +87,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     this.DeleteCellHandler = this.DeleteCellHandler.bind(this);
     this.handleSaveClick = this.handleSaveClick.bind(this);
     this.notebookNameChangeHandler = this.notebookNameChangeHandler.bind(this);
+    this.handleDownloadHTML = this.handleDownloadHTML.bind(this);
 
   }
 
@@ -297,6 +298,12 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     saveAs(blob, `${notebook_name}.jsnb`);
   };
 
+  handleDownloadHTML = () => {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    saveAs(blob, 'page.html');
+  };
+
 
   render = () => {
 
@@ -313,6 +320,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
           notebook_name={this.state.notebook_name}
           notebookHash={this.state.notebookHash}
           notebookNameChangeHandler={this.notebookNameChangeHandler}
+          handleDownloadHTML = {this.handleDownloadHTML}
         >
           <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 

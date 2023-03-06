@@ -69,7 +69,7 @@ const HeaderComponent = (props) => {
                                 </NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">HTML</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1" onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">Notebook(.jsnb)</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.1">PDF</NavDropdown.Item>
                             </NavDropdown>
