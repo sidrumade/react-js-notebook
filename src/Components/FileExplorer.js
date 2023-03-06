@@ -7,7 +7,6 @@ class FileExplorer extends Component {
   constructor(props) {
     super(props);
     this.fileInputRef = props.fileInputRef ;
-    // this.notebook_name = props.notebook_name;
     this.notebook_hash = props.notebook_hash;
     this.state = {
       selectedFile: null,
