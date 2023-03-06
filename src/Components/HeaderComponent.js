@@ -29,7 +29,6 @@ const HeaderComponent = (props) => {
                             <NavDropdown title="File" id="basic-nav-dropdown">
                                 <NavDropdown.Item onClick = { (e)=> {window.open(`/`, '_blank');} }>New Notebook</NavDropdown.Item>
                                 {props.children}
-                                <NavDropdown.Item >Make a Copy...</NavDropdown.Item>
                                 <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>
                             </NavDropdown>
 
@@ -70,8 +69,8 @@ const HeaderComponent = (props) => {
                             </NavDropdown>
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1" onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">Notebook(.jsnb)</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">PDF</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1" onClick={props.handleSaveClick} >Notebook(.jsnb)</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.1" onClick = {(e)=> {window.print()}} >PDF</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Kernel" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Restart</NavDropdown.Item>
