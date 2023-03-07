@@ -8,6 +8,8 @@ import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 import Alert from 'react-bootstrap/Alert';
 import CellPlot from './CellPlot';
 import * as d3 from "d3";
+import { Button } from 'react-bootstrap';
+import { faRemove } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -49,7 +51,10 @@ const CellComponent = (props) => {
             <div className="output_area">
               <div className="run_this_cell"></div>
               <div className="prompt output_prompt">
-                <bdi>Out[{props.cellindex}]:</bdi>
+                <bdi>Out[{props.cellindex+1}]:</bdi>
+                <Button className="clear_out_btn" title="delete cell" variant='danger' onClick={(e) => { props.handleClearOutput(props.cellindex); }}>
+                  <FontAwesomeIcon icon={faRemove} />
+                </Button>
               </div>
               <div className="output_subarea output_html rendered_html output_text output_result" dir="auto">
                 <div>
@@ -68,16 +73,18 @@ const CellComponent = (props) => {
             </div>
           </div>
         </div>) : null}
-        
 
 
-      
+
+
       <div>
         {
           props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot
             key={props.cellindex}
             cellindex_value={props.cellindex}
             plotly_input={props.plotly_input}
+            handleClearOutput = {props.handleClearOutput}
+            
           /> : null
         }
       </div>

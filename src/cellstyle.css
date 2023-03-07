@@ -281,3 +281,16 @@ div.cell {
   overflow: visible;
   background: white;
 }
+
+
+
+
+
+
+
+/*    */
+
+.prompt.output_prompt{
+  display: flex;
+  flex-direction: column;
+}

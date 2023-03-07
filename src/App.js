@@ -39,7 +39,7 @@ class App extends React.Component {
 
       }
     }
-    
+
     this.state = this.stateData !== null ? JSON.parse(this.stateData) : {
       notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
@@ -317,26 +317,24 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     // Create the blob object with the modified HTML
     const html = clonedElement.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      saveAs(blob, 'page.html');
-    };
+    saveAs(blob, 'page.html');
+  };
 
-  handleClearOutput =(cellIndex = undefined)=>{
+  handleClearOutput = (cellIndex = undefined) => {
 
-    if (cellIndex === undefined){
-      
+    if (cellIndex === undefined) {
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData.map((item, index) => {
+          newCellContextData[index]['output'] = [];
+          newCellContextData[index]['plotly_input'] = {};
 
-    this.setState(prevState => {
-      const newCellContextData = [...prevState.cellContext_data];
-      newCellContextData.map((item, index) => {
-        newCellContextData[index]['output'] = [];
-        newCellContextData[index]['plotly_input'] = {};
 
-        
+        });
+        return { 'cellContext_data': newCellContextData };
       });
-      return { 'cellContext_data': newCellContextData };
-    });
     }
-    else{
+    else {
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex]['output'] = [];
@@ -344,13 +342,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         return { 'cellContext_data': newCellContextData };
       });
     }
-    
+
   }
-
-  
-
-
-
 
   render = () => {
 
@@ -367,8 +360,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
           notebook_name={this.state.notebook_name}
           notebookHash={this.state.notebookHash}
           notebookNameChangeHandler={this.notebookNameChangeHandler}
-          handleDownloadHTML = {this.handleDownloadHTML}
-          handleClearOutput = {this.handleClearOutput}
+          handleDownloadHTML={this.handleDownloadHTML}
+          handleClearOutput={this.handleClearOutput}
         >
           <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 
@@ -380,7 +373,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} />
                 })
               }
             </div>
