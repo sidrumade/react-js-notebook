@@ -135,6 +135,21 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
       plotly_output.push({ 'data': data, 'layout': layout });
     }
 
+    global.loadLibrary=(libraryUrl)=> {
+      const script = document.createElement('script');
+      script.src = libraryUrl;
+      script.async = true;
+    
+      const callback = () => {
+        console.log(`${libraryUrl} loaded`);
+      };
+    
+      script.addEventListener('load', callback);
+    
+      document.head.appendChild(script);
+    }
+
+
     global.d3 = d3;
     global.Plotly = Plotly;
 
