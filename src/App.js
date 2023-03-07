@@ -39,6 +39,7 @@ class App extends React.Component {
 
       }
     }
+    
     this.state = this.stateData !== null ? JSON.parse(this.stateData) : {
       notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
@@ -88,6 +89,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     this.handleSaveClick = this.handleSaveClick.bind(this);
     this.notebookNameChangeHandler = this.notebookNameChangeHandler.bind(this);
     this.handleDownloadHTML = this.handleDownloadHTML.bind(this);
+    this.handleClearOutput = this.handleClearOutput.bind(this);
 
   }
 
@@ -117,8 +119,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
       return { cellContext_data: newCellContextData };
     });
 
-
   }
+
 
 
   run = (cellIndex, this_component) => {
@@ -303,20 +305,51 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     saveAs(blob, `${notebook_name}.jsnb`);
   };
 
-handleDownloadHTML = () => {
+  handleDownloadHTML = () => {
 
-  // Clone the document element so that modifications don't affect the actual page
-  const clonedElement = document.documentElement.cloneNode(true);
+    // Clone the document element so that modifications don't affect the actual page
+    const clonedElement = document.documentElement.cloneNode(true);
 
-  // Remove the elements you want to ignore
-  const elementsToIgnore = clonedElement.querySelectorAll('.ignore-component');
-  elementsToIgnore.forEach((element) => element.remove());
+    // Remove the elements you want to ignore
+    const elementsToIgnore = clonedElement.querySelectorAll('.ignore-component');
+    elementsToIgnore.forEach((element) => element.remove());
 
-  // Create the blob object with the modified HTML
-  const html = clonedElement.outerHTML;
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    saveAs(blob, 'page.html');
-  };
+    // Create the blob object with the modified HTML
+    const html = clonedElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      saveAs(blob, 'page.html');
+    };
+
+  handleClearOutput =(cellIndex = undefined)=>{
+
+    if (cellIndex === undefined){
+      
+
+    this.setState(prevState => {
+      const newCellContextData = [...prevState.cellContext_data];
+      newCellContextData.map((item, index) => {
+        newCellContextData[index]['output'] = [];
+        newCellContextData[index]['plotly_input'] = {};
+
+        
+      });
+      return { 'cellContext_data': newCellContextData };
+    });
+    }
+    else{
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex]['output'] = [];
+        newCellContextData[cellIndex]['plotly_input'] = {};
+        return { 'cellContext_data': newCellContextData };
+      });
+    }
+    
+  }
+
+  
+
+
 
 
   render = () => {
@@ -335,6 +368,7 @@ handleDownloadHTML = () => {
           notebookHash={this.state.notebookHash}
           notebookNameChangeHandler={this.notebookNameChangeHandler}
           handleDownloadHTML = {this.handleDownloadHTML}
+          handleClearOutput = {this.handleClearOutput}
         >
           <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 

@@ -43,7 +43,6 @@ const HeaderComponent = (props) => {
                                     <FontAwesomeIcon icon={faPlus} /> Insert Cell Above
                                 </button>
                                 </NavDropdown.Item>
-
                               
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="move selected cells up" onClick={(e)=>props.MoveCellUpHandler(props.cellIndex)} >
@@ -64,6 +63,12 @@ const HeaderComponent = (props) => {
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faRemove} /> Delete Cell
+                                </button>
+                                </NavDropdown.Item>
+
+                                <NavDropdown.Item href="">
+                                <button className="btn" title="delete cell"  onClick={(e)=>props.handleClearOutput()} >
+                                    <FontAwesomeIcon icon={faRemove} /> Clear Output
                                 </button>
                                 </NavDropdown.Item>
                             </NavDropdown>
