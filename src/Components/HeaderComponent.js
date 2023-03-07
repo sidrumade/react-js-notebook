@@ -10,7 +10,7 @@ import { faSave, faPlus, faCut, faCopy, faPaste, faArrowUp, faArrowDown, faPlay,
 const HeaderComponent = (props) => {
     return (
         <>
-            <Navbar bg="light" expand="lg" sticky="top">
+            <Navbar bg="light" expand="lg" sticky="top" className="ignore-component">
                 <Container>
                     <Navbar.Brand href="#" >
                         <img

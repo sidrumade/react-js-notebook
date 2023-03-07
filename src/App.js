@@ -101,6 +101,11 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    // Only update the component if the props or state have changed
+    return nextState !== this.state;
+  }
+
 
 
   handleEditorChange = (newValue, cellindex) => {
@@ -298,9 +303,18 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     saveAs(blob, `${notebook_name}.jsnb`);
   };
 
-  handleDownloadHTML = () => {
-    const html = document.documentElement.outerHTML;
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+handleDownloadHTML = () => {
+
+  // Clone the document element so that modifications don't affect the actual page
+  const clonedElement = document.documentElement.cloneNode(true);
+
+  // Remove the elements you want to ignore
+  const elementsToIgnore = clonedElement.querySelectorAll('.ignore-component');
+  elementsToIgnore.forEach((element) => element.remove());
+
+  // Create the blob object with the modified HTML
+  const html = clonedElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     saveAs(blob, 'page.html');
   };
 
