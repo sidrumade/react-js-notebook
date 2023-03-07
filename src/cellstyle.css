@@ -283,14 +283,8 @@ div.cell {
 }
 
 
-
-
-
-
-
-/*    */
-
 .prompt.output_prompt{
   display: flex;
   flex-direction: column;
 }
+
