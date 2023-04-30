@@ -30,7 +30,7 @@ const CellComponent = (props) => {
           rows={props.rows || 5}
           onValueChange={(newValue) => props.handleEditorChange(newValue, props.cellindex)}
           highlight={code => Prism.highlight(code, Prism.languages.javascript)}
-          onKeyDown={(e) => props.handleKeyDown(e, props.cellindex)}
+          onKeyDown={(e) => props.handleKeyDown(e)}
           padding={10}
           className="input"
           style={{

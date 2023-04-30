@@ -252,7 +252,9 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
   };
 
 
-  handleKeyDown = (e, cellindex) => {
+  handleKeyDown = (e) => {
+    let cellindex = this.state.active_cell_index;
+
     if (e.ctrlKey && e.keyCode === 13) {
       e.preventDefault();
       this.evalCode(cellindex); //take active index
@@ -388,7 +390,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e, index)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} />
                 })
               }
             </div>
