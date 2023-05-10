@@ -8,7 +8,8 @@ const OpenFile = (props) => {
       if (notebook_name.trim() === ''){
         notebook_name = 'untitled'
       }
-      window.open(`/${notebook_name}.jsnb/?notebook_hash=${props.notebook_hash}`, '_blank');
+
+      window.open(`${window.location.href}/${notebook_name}.jsnb/?notebook_hash=${props.notebook_hash}`, '_blank');
     };
     fileReader.readAsText(props.this_state.state.selectedFile);
   };
