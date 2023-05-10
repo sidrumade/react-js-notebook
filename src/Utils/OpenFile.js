@@ -9,7 +9,7 @@ const OpenFile = (props) => {
         notebook_name = 'untitled'
       }
 
-      window.open(`${window.location.href}/${notebook_name}.jsnb/?notebook_hash=${props.notebook_hash}`, '_blank');
+      window.open(`${window.location.href}${notebook_name}.jsnb/?notebook_hash=${props.notebook_hash}`, '_blank');
     };
     fileReader.readAsText(props.this_state.state.selectedFile);
   };
