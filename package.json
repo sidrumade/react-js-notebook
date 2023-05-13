@@ -1,5 +1,4 @@
 {
-  "homepage": "http://sidrumade.github.io/react-js-notebook",
   "name": "react-js-notebook",
   "version": "0.1.0",
   "private": true,
@@ -28,8 +27,6 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "predeploy" : "npm run build",
-    "deploy" : "gh-pages -d build",
     "build": "react-scripts --openssl-legacy-provider build"
   },
   "eslintConfig": {
