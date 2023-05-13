@@ -4,6 +4,7 @@ import './App.css';
 import './notebook.css';
 import * as d3 from "d3";
 import HeaderComponent from './Components/HeaderComponent';
+import FooterComponent from './Components/FooterComponent';
 import CellComponent from './Components/CellComponent';
 import InsertCellBelow from './Utils/InsertCellBelow';
 import InsertCellAbove from './Utils/InsertCellAbove';
@@ -396,6 +397,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             </div>
           </div>
         </div>
+
+        <FooterComponent/>
 
       </div>
     );
