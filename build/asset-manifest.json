@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/react-js-notebook/static/css/main.b147090f.chunk.css",
+    "main.js": "/react-js-notebook/static/js/main.852cbe7b.chunk.js",
+    "main.js.map": "/react-js-notebook/static/js/main.852cbe7b.chunk.js.map",
+    "runtime-main.js": "/react-js-notebook/static/js/runtime-main.60e3cced.js",
+    "runtime-main.js.map": "/react-js-notebook/static/js/runtime-main.60e3cced.js.map",
+    "static/css/2.8461b9fa.chunk.css": "/react-js-notebook/static/css/2.8461b9fa.chunk.css",
+    "static/js/2.af9ed115.chunk.js": "/react-js-notebook/static/js/2.af9ed115.chunk.js",
+    "static/js/2.af9ed115.chunk.js.map": "/react-js-notebook/static/js/2.af9ed115.chunk.js.map",
+    "static/js/3.08c56df7.chunk.js": "/react-js-notebook/static/js/3.08c56df7.chunk.js",
+    "static/js/3.08c56df7.chunk.js.map": "/react-js-notebook/static/js/3.08c56df7.chunk.js.map",
+    "index.html": "/react-js-notebook/index.html",
+    "static/css/2.8461b9fa.chunk.css.map": "/react-js-notebook/static/css/2.8461b9fa.chunk.css.map",
+    "static/css/main.b147090f.chunk.css.map": "/react-js-notebook/static/css/main.b147090f.chunk.css.map",
+    "static/js/2.af9ed115.chunk.js.LICENSE.txt": "/react-js-notebook/static/js/2.af9ed115.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.60e3cced.js",
+    "static/css/2.8461b9fa.chunk.css",
+    "static/js/2.af9ed115.chunk.js",
+    "static/css/main.b147090f.chunk.css",
+    "static/js/main.852cbe7b.chunk.js"
+  ]
+}
