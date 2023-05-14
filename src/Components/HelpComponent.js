@@ -10,7 +10,7 @@ const HelpComponent = () => {
     <br></br>
     <br></br>
     <p className = "title">Shortcut1 (Run Current Cell)</p>
-    <pre>Ctrl + Enter / Shift + Enter</pre>
+    <pre>Ctrl + Enter</pre>
 
     <p className = "title">Shortcut2 (Run Current Cell and go to next Cell)</p>
     <pre>Shift + Enter</pre>
