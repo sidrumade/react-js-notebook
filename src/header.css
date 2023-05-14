@@ -1,4 +1,4 @@
-.btn {
+.headercomponent .btn {
     display: inline-block;
     margin-bottom: 0;
     font-weight: normal;
@@ -24,14 +24,14 @@
   }
   
 
-.dropdown-menu{
+.headercomponent .dropdown-menu{
   max-height: 50vh;
   overflow: auto;
   font-size: .7rem;
 }
 
 
-.notebook_lbl{
+.headercomponent .notebook_lbl{
   height: 1.2em;
   box-shadow: 1px 1px 3px #c7c9c9 inset;
   padding: 1rem;

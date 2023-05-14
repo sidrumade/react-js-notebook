@@ -11,7 +11,7 @@ const HeaderComponent = (props) => {
     return (
         <>
             <Navbar bg="light" expand="lg" sticky="top" className="ignore-component">
-                <Container>
+                <Container className="headercomponent">
                     <Navbar.Brand href="#" >
                         <img
                             alt=""
@@ -80,7 +80,7 @@ const HeaderComponent = (props) => {
                             <NavDropdown title="Kernel" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Restart</NavDropdown.Item>
                             </NavDropdown>
-                            <Nav.Link href="#help">Help</Nav.Link>
+                            <Nav.Link  onClick={props.toggleModalOpen}>Help</Nav.Link>
                             
                         </Nav>
                     </Navbar.Collapse>
