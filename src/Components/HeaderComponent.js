@@ -33,53 +33,46 @@ const HeaderComponent = (props) => {
                             </NavDropdown>
 
                             <NavDropdown title="Tools" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="">
+                                <NavDropdown.Item >
                                 <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faPlus} /> Insert Cell Below
                                 </button>
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item >
                                 <button className="btn" title="insert cell above" onClick={(e)=>props.InsertCellAboveHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faPlus} /> Insert Cell Above
                                 </button>
                                 </NavDropdown.Item>
                               
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item >
                                 <button className="btn" title="move selected cells up" onClick={(e)=>props.MoveCellUpHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cell Up
                                 </button>
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item >
                                 <button className="btn" title="move selected cells down" onClick={(e)=>props.MoveCellDownHandler(props.cellIndex)}>
                                     <FontAwesomeIcon icon={faArrowDown} /> Move Selected Cells Down
                                 </button>
                                 </NavDropdown.Item>
-                                {/* <NavDropdown.Item href="#action/3.1">
-                                <button className="btn" title="run cell, select below" >
-                                    <FontAwesomeIcon icon={faPlay} /> Run Cell, Select Below
-                                </button>
-                                </NavDropdown.Item> */}
                                 
-                                <NavDropdown.Item href="#action/3.1">
+                                <NavDropdown.Item >
                                 <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
                                     <FontAwesomeIcon icon={faRemove} /> Delete Cell
                                 </button>
                                 </NavDropdown.Item>
 
-                                <NavDropdown.Item href="">
+                                <NavDropdown.Item >
                                 <button className="btn" title="delete cell"  onClick={(e)=>props.handleClearOutput()} >
                                     <FontAwesomeIcon icon={faRemove} /> Clear Output
                                 </button>
                                 </NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1" onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1" onClick={props.handleSaveClick} >Notebook(.jsnb)</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1" onClick = {(e)=> {window.print()}} >PDF</NavDropdown.Item>
+                                <NavDropdown.Item  onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
+                                <NavDropdown.Item onClick={props.handleSaveClick} >Notebook(.jsnb)</NavDropdown.Item>
+                                <NavDropdown.Item onClick = {(e)=> {window.print()}} >PDF</NavDropdown.Item>
                             </NavDropdown>
-                            <NavDropdown title="Kernel" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Restart</NavDropdown.Item>
-                            </NavDropdown>
+
                             <Nav.Link  onClick={props.toggleHelpModalOpen}>Help</Nav.Link>
                             
                         </Nav>
