@@ -3,7 +3,7 @@ import Plot from 'plotly.js';
 import * as d3 from "d3";
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 
 class CellPlot extends Component {
@@ -39,8 +39,8 @@ class CellPlot extends Component {
 
       <div className="prompt output_prompt">
         <bdi>Out[{cellindex_value + 1}]:</bdi>
-        <Button className="clear_out_btn" title="delete cell" variant='danger' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
-          <FontAwesomeIcon icon={faRemove} />
+        <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
+          <FontAwesomeIcon icon={faTrash} style={{'color':'black'}} />
         </Button>
       </div>
 
