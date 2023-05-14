@@ -39,7 +39,7 @@ class CellPlot extends Component {
 
       <div className="prompt output_prompt">
         <bdi>Out[{cellindex_value + 1}]:</bdi>
-        <Button className="clear_out_btn" title="delete cell" variant='danger' onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
+        <Button className="clear_out_btn" title="delete cell" variant='danger' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
           <FontAwesomeIcon icon={faRemove} />
         </Button>
       </div>

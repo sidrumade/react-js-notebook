@@ -52,7 +52,7 @@ const CellComponent = (props) => {
               <div className="run_this_cell"></div>
               <div className="prompt output_prompt">
                 <bdi>Out[{props.cellindex+1}]:</bdi>
-                <Button className="clear_out_btn" title="delete cell" variant='danger' onClick={(e) => { props.handleClearOutput(props.cellindex); }}>
+                <Button className="clear_out_btn" title="delete cell" variant='danger' size="sm" onClick={(e) => { props.handleClearOutput(props.cellindex); }}>
                   <FontAwesomeIcon icon={faRemove} />
                 </Button>
               </div>

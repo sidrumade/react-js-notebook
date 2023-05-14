@@ -54,11 +54,11 @@ const HeaderComponent = (props) => {
                                     <FontAwesomeIcon icon={faArrowDown} /> Move Selected Cells Down
                                 </button>
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.1">
+                                {/* <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="run cell, select below" >
                                     <FontAwesomeIcon icon={faPlay} /> Run Cell, Select Below
                                 </button>
-                                </NavDropdown.Item>
+                                </NavDropdown.Item> */}
                                 
                                 <NavDropdown.Item href="#action/3.1">
                                 <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
@@ -80,7 +80,7 @@ const HeaderComponent = (props) => {
                             <NavDropdown title="Kernel" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Restart</NavDropdown.Item>
                             </NavDropdown>
-                            <Nav.Link  onClick={props.toggleModalOpen}>Help</Nav.Link>
+                            <Nav.Link  onClick={props.toggleHelpModalOpen}>Help</Nav.Link>
                             
                         </Nav>
                     </Navbar.Collapse>

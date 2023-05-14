@@ -1,0 +1,9 @@
+.helpcomponent{
+    height: 70vh;
+    overflow-y: scroll;
+}
+
+
+.helpcomponent .title{
+    font-weight: bold;
+}

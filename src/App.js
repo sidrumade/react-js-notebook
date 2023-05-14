@@ -10,6 +10,9 @@ import InsertCellAbove from './Utils/InsertCellAbove';
 import MoveCellDown from './Utils/MoveCellDown';
 import MoveCellUp from './Utils/MoveCellUp';
 import DeleteCell from './Utils/DeleteCell';
+import HelpComponent from './Components/HelpComponent';
+import { Button, Modal } from 'react-bootstrap';
+
 
 import * as Plotly from 'plotly.js';
 
@@ -43,6 +46,7 @@ class App extends React.Component {
     this.state = this.stateData !== null ? JSON.parse(this.stateData) : {
       notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
+      showHelp:false,
       cellContext_data: [{
         cellindex_value: 0,
         output: [],
@@ -90,6 +94,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     this.notebookNameChangeHandler = this.notebookNameChangeHandler.bind(this);
     this.handleDownloadHTML = this.handleDownloadHTML.bind(this);
     this.handleClearOutput = this.handleClearOutput.bind(this);
+    this.toggleHelpModalOpen = this.toggleHelpModalOpen.bind(this);
 
   }
 
@@ -361,6 +366,19 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     }
 
   }
+  toggleHelpModalClose = () => {
+    this.setState({
+      showHelp: false
+    });
+  }
+
+  toggleHelpModalOpen = () => {
+    this.setState({
+      showHelp: true
+    });
+  }
+
+  
 
   render = () => {
 
@@ -379,6 +397,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
           notebookNameChangeHandler={this.notebookNameChangeHandler}
           handleDownloadHTML={this.handleDownloadHTML}
           handleClearOutput={this.handleClearOutput}
+          toggleHelpModalOpen = {this.toggleHelpModalOpen}
         >
           <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 
@@ -396,6 +415,26 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             </div>
           </div>
         </div>
+
+        
+
+      <Modal
+        show={this.state.showHelp}
+        onHide={this.toggleHelpModalClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Javascript Notebook Help</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <HelpComponent/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={this.toggleHelpModalClose}>Understood</Button>
+        </Modal.Footer>
+      </Modal>
+
 
       </div>
     );

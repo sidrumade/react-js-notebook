@@ -288,3 +288,8 @@ div.cell {
   flex-direction: column;
 }
 
+.clear_out_btn{
+  height: 2em;
+  width: 2em;
+  margin:0 auto;
+}
