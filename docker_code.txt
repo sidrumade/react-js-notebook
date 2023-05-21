@@ -1,0 +1,6 @@
+#build docker container
+docker build -t javascript-notebook .
+
+
+# run docker in background
+docker run -d -p 3000:3000 javascript-notebook
