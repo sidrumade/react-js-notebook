@@ -108,7 +108,7 @@ div.output.cell_output_block{
 }
 
 div.run_this_cell {
-  display: none;
+  display: block;
   cursor: pointer;
   color: #333;
   padding-top: 5px;
@@ -116,11 +116,12 @@ div.run_this_cell {
   padding-left: 2ex;
   padding-right: 2ex;
   width: 1ex;
+  margin: 0 auto auto auto;
 }
 
 div.prompt_container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   text-align: right;
@@ -292,4 +293,8 @@ div.cell {
   height: 2em;
   width: 2em;
   margin:0 auto;
+}
+
+.hide_element{
+  display: none !important;
 }

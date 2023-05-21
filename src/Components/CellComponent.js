@@ -21,8 +21,8 @@ const CellComponent = (props) => {
           <div className="prompt input_prompt">
             <bdi>In</bdi>&nbsp;[{props.cellindex + 1}]:
           </div>
-          <div className="run_this_cell" title="Run this cell">
-            <FontAwesomeIcon icon={faStepForward} />
+          <div className={`run_this_cell ${props.cellindex === props.active_cell_index ? '' : 'hide_element'}`} title="Run this cell">
+            <FontAwesomeIcon icon={faStepForward} onClick={ (e)=> props.handleRunThisCell(props.cellindex)} />
           </div>
         </div>
         <CodeEditor

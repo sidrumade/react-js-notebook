@@ -98,6 +98,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     this.handleDownloadHTML = this.handleDownloadHTML.bind(this);
     this.handleClearOutput = this.handleClearOutput.bind(this);
     this.toggleHelpModalOpen = this.toggleHelpModalOpen.bind(this);
+    this.handleRunThisCell = this.handleRunThisCell.bind(this);
 
   }
 
@@ -259,6 +260,11 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
 
   };
 
+  handleRunThisCell =(cell_index)=>{
+    this.changeActiveCellIndex(cell_index);
+    this.evalCode(this.state.active_cell_index);
+  }
+
 
   handleKeyDown = (e) => {
     let cellindex = this.state.active_cell_index;
@@ -412,7 +418,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} />
                 })
               }
             </div>
