@@ -17,7 +17,7 @@ RUN npm install serve@latest
 COPY . .
 
 # Build the React app
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=8192" npm run build -- --max-workers=1
 
 # Expose the port on which the React app will run
 EXPOSE 3000
