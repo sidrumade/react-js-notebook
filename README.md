@@ -19,7 +19,7 @@ Notebook for javascript experimentation (in the browser). Overview:
 ### 2. `npm install`
 ### 3. `npm run build`
 ### 4. `npm install -g serve`
-### 5. `serve -s build
+### 5. `serve -s build`
 ### 6. You can also try the hosted version (without downloading anything) here: [( https://legendary-dasik-d57a27.netlify.app)](https://legendary-dasik-d57a27.netlify.app)
 ### 7. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
 
