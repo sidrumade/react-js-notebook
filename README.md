@@ -1,74 +1,59 @@
-# react-js-notebook
-# Getting Started with Create React App
+# JavaScript Notebook (JSNB) [Try here](https://legendary-dasik-d57a27.netlify.app). 
+Notebook for javascript experimentation (in the browser). Overview:
+- Easy to use javascript experimentation tool.
+- Runs with backend of node.js/npm .  
+- UI is similar/close to Jupyter Notebook (for the sake familiarity for python developers). Has a minimalistic UI to put focus on user generated code/content.
+- It is styled with react-bootstrap  etc.
+- Comes pre-loaded with Plotly, D3 for power usage. More libaries/modules can be easily loaded using load_script or import_module functions.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Table of contents
+<!-- toc -->
+1. [Getting Started](#getting-started)
+2. [Features](#features)
+3. [Use cases](#use-cases)
+5. [Vs. xyz](#how-is-jsnb-different)
+6. [Additional Resources](#links)
 
-## Available Scripts
+## Getting Started
+### 1. `Clone this repository`
+### 2. `npm install`
+### 3. `npm run build`
+### 4. `npm install -g serve`
+### 5. `serve -s build
+### 6. You can also try the hosted version (without downloading anything) here: [( https://legendary-dasik-d57a27.netlify.app)](https://legendary-dasik-d57a27.netlify.app)
+### 7. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Features
+- The notebook consists of cells. Each cell will have user inputted code and an output. There is a menu at the top in navbar.
+- There are two types of cells: code and html. Each output cell is sync with code cell .
+- To get the output of a cell press play ► button on the cell(or Cmd/Ctrl-Enter on keyboard after selecting the cell).
+- The cell menu also has buttons for moving the cell up ↑, down ↓, adding a new cell ✛ and deleting the current cell ☓ all in navbar menu.
+- A notebook can be downloaded as json (has a default extension of .jsnb). IT can be loaded back into the app. The notebook can also be downloaded as pdf.
+- A .jsnb file can also be loaded into the app by opening the default link and choosing the .jsnb file.
+- There are many special functions included in the app: show(...) for showing some string in the output box.
+- For adding more functionality import an external library through loadLibrary(...) 
+- D3JS (for data manipulation and charting), Plotly (for plots) are preloaded and can be used in the notebooks without seperately loading.
+- Keyboard Shortcuts: See in help option.
 
 
-### npm -v 9.6.0
+## Use cases
+1. For trying new libraries for testing and building
+2. For building reproducible research and sharing the results with others
+
+## Not to be used for:
+1. Production use cases
+2. As an alternative to webapps
+3. Working with sensitive data like login/pwd/private keys etc.
+
+
+## How is JSNB different
+- JSNB is an open source application and hence can be downloaded, modified and used freely. Jsfiddle/codepen are cloud based platforms.
+- JSNB can have multiple cells so it can create long documents.
+- Intended use is for experimenting and computing in javascript. HTML and CSS are secondary in the case of JSNB. Whereas for Jsfiddle and codepen the main use case to test javascript along with html and css.
+- JSNB can also be used for scientific computation using several open source javascript libraries.
+- After some upgrades the Data Science Model can be build using the JSNB.
+
+## Links
+Additional documentation for JSNB:
+1. [Docs]()
+4. [Sample Notebooks]()
