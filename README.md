@@ -56,4 +56,4 @@ Notebook for javascript experimentation (in the browser). Overview:
 ## Links
 Additional documentation for JSNB:
 1. [Docs]()
-4. [Sample Notebooks]()
+4. [Sample Notebooks](https://github.com/sidrumade/react-js-notebook/blob/main/sample/)
