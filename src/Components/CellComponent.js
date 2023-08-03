@@ -24,6 +24,7 @@ const CellComponent = (props) => {
           <div className={`run_this_cell ${props.cellindex === props.active_cell_index ? '' : 'hide_element'}`} title="Run this cell">
             <FontAwesomeIcon icon={faStepForward} onClick={ (e)=> props.handleRunThisCell(props.cellindex)} />
           </div>
+          <bdi className='executionTime'>{props.executionTime} Sec.</bdi>
         </div>
         <CodeEditor
           value={props.editorsValue || ''}

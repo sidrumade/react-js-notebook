@@ -28,12 +28,10 @@
     "react-scripts": "^4.0.3",
     "react-simple-code-editor": "^0.13.1",
     "web-vitals": "^2.1.4"
-    
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "node --max-old-space-size=4096 ./node_modules/react-scripts/bin/react-scripts.js --openssl-legacy-provider build"
-
   },
   "eslintConfig": {
     "extends": [

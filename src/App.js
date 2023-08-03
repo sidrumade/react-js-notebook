@@ -64,7 +64,8 @@ class App extends React.Component {
 layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         rows: 5,
         error: '',
-        plotly_input: {}
+        plotly_input: {},
+        executionTime : 0
       },
       {
         cellindex_value: 1,
@@ -72,7 +73,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         editorsValue: `show_graph(data,layout);`,
         rows: 5,
         error: '',
-        plotly_input: {}
+        plotly_input: {},
+        executionTime : 0
       }],
       run_all: false,
       active_cell_index: 0,
@@ -187,7 +189,25 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         return 0;
       }
       else {
+        const startTime = performance.now();
         global.eval(code);
+
+        // End measuring the execution time
+        const endTime = performance.now();
+
+        // Calculate the elapsed time in milliseconds
+        const executionTime = (endTime - startTime)/1000;
+        
+        console.log('executionTime',executionTime);
+
+        let cellContext = this.state.cellContext_data[cellIndex];
+        cellContext['executionTime'] = executionTime;
+        this.setState(prevState => {
+          const newCellContextData = [...prevState.cellContext_data];
+          newCellContextData[cellIndex] = cellContext;
+          return { cellContext_data: newCellContextData };
+        });
+
 
       }
     }
@@ -281,7 +301,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         output: [],
         editorsValue: '',
         rows: 5,
-        plotly_input: {}
+        plotly_input: {},
+        executionTime : 0
       };
 
       this.evalCode(cellIndex);
@@ -359,6 +380,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         newCellContextData.map((item, index) => {
           newCellContextData[index]['output'] = [];
           newCellContextData[index]['plotly_input'] = {};
+          newCellContextData[index]['executionTime'] = 0;
 
 
         });
@@ -370,6 +392,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex]['output'] = [];
         newCellContextData[cellIndex]['plotly_input'] = {};
+        newCellContextData[cellIndex]['executionTime'] = 0;
         return { 'cellContext_data': newCellContextData };
       });
     }
@@ -418,7 +441,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {this.state.cellContext_data[index].executionTime} />
                 })
               }
             </div>

@@ -116,7 +116,7 @@ div.run_this_cell {
   padding-left: 2ex;
   padding-right: 2ex;
   width: 1ex;
-  margin: 0 auto auto auto;
+  margin: 0 auto 1% auto;
 }
 
 div.prompt_container {
@@ -297,4 +297,10 @@ div.cell {
 
 .hide_element{
   display: none !important;
+}
+
+.executionTime{
+  margin: 1% auto auto auto;
+  color : #303F9F;
+  font-size: 0.8em;
 }
