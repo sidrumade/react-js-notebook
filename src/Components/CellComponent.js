@@ -80,10 +80,10 @@ const CellComponent = (props) => {
 
       <div>
         {
-          props.plotly_input != undefined && Object.keys(props.plotly_input).length > 0 ? <CellPlot
+          props.html_element != '' ? <CellPlot
             key={props.cellindex}
             cellindex_value={props.cellindex}
-            plotly_input={props.plotly_input}
+            html_element={props.html_element}
             handleClearOutput = {props.handleClearOutput}
             
           /> : null

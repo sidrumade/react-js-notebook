@@ -50,32 +50,66 @@ class App extends React.Component {
       notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
       showHelp:false,
-      cellContext_data: [{
+      cellContext_data: [
+        {
+          cellindex_value: 1,
+          output: [],
+          editorsValue: `insertHTML("<div style='height:350px;width:600px;' id='myDiv' ></div>")`,
+          rows: 1,
+          error: '',
+          html_element: '',
+          executionTime : 0
+        },
+        {
         cellindex_value: 0,
         output: [],
-        editorsValue: `data=[{ 'x': [1, 2, 3],
-        'y': [2, 6, 3],
-        'type': 'scatter',
-        'mode': 'lines+markers',
-        'marker': {'color': 'red'},
-      },
-      {'type': 'bar', 'x': [1, 2, 3], 'y': [2, 5, 3]}];
-
-layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
-        rows: 5,
+        editorsValue: `var frames = [
+          {name: 'sine', data: [{x: [], y: []}]},
+          {name: 'cosine', data: [{x: [], y: []}]},
+          {name: 'circle', data: [{x: [], y: []}]},
+        ];
+        
+        var n = 100;
+        for (var i = 0; i < n; i++) {
+          var t = i / (n - 1) * 2 - 1;
+        
+          // A sine wave:
+          frames[0].data[0].x[i] = t * Math.PI;
+          frames[0].data[0].y[i] = Math.sin(t * Math.PI);
+        
+          // A cosine wave:
+          frames[1].data[0].x[i] = t * Math.PI;
+          frames[1].data[0].y[i] = Math.cos(t * Math.PI);
+        
+          // A circle:
+          frames[2].data[0].x[i] = Math.sin(t * Math.PI);
+          frames[2].data[0].y[i] = Math.cos(t * Math.PI);
+        }
+        
+        Plotly.newPlot('myDiv', [{
+          x: frames[0].data[0].x,
+          y: frames[0].data[0].y,
+          line: {simplify: false},
+        }], {
+          xaxis: {range: [-Math.PI, Math.PI]},
+          yaxis: {range: [-1.2, 1.2]},
+          updatemenus: [{
+            buttons: [
+              {method: 'animate', args: [['sine']], label: 'sine'},
+              {method: 'animate', args: [['cosine']], label: 'cosine'},
+              {method: 'animate', args: [['circle']], label: 'circle'}
+            ]
+          }]
+        }).then(function() {
+          Plotly.addFrames('myDiv', frames);
+        });
+        `,
+        rows: 40,
         error: '',
-        plotly_input: {},
+        html_element: '',
         executionTime : 0
       },
-      {
-        cellindex_value: 1,
-        output: [],
-        editorsValue: `show_graph(data,layout);`,
-        rows: 5,
-        error: '',
-        plotly_input: {},
-        executionTime : 0
-      }],
+      ],
       run_all: false,
       active_cell_index: 0,
 
@@ -121,6 +155,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
 
 
 
+
+
   handleEditorChange = (newValue, cellindex) => {
 
     this.setState(prevState => {
@@ -136,14 +172,14 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
 
   run = (cellIndex, this_component) => {
     let output = [];
-    let plotly_output = [];
+    let html_element = [];
 
     global.show = function (...data) {
       output.push(data.join(' '));
     };
 
-    global.show_graph = (data, layout) => {
-      plotly_output.push({ 'data': data, 'layout': layout });
+    global.insertHTML = (element) => {
+      html_element.push(element);
     }
 
     global.loadLibrary=(libraryUrl)=> {
@@ -169,45 +205,27 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     // execute js code here
     let code = this_component.state.cellContext_data[cellIndex].editorsValue;
     try {
-      //execute code first 
-      // Split the code on ';' or '\n'
-      const codeLines = code.split(/;|\n/).filter((line) => line.trim() !== '');
-      // Check if the resulting array has a length greater than 1
-      const hasMultipleLinesOrStatements = codeLines.length > 1;
-      // Check if the code contains a call to show_graph()
-      const hasShowGraphCall = /show_graph\s*\(/.test(code.replace(/\s/g, ''));
 
-      if ((hasMultipleLinesOrStatements && hasShowGraphCall)) {
-        console.warn('show_graph() function call detected');
-        let cellContext = this.state.cellContext_data[cellIndex];
-        cellContext['error'] = 'must specify show_graph() function in saperate call';
-        this.setState(prevState => {
-          const newCellContextData = [...prevState.cellContext_data];
-          newCellContextData[cellIndex] = cellContext;
-          return { cellContext_data: newCellContextData };
-        });
-        return 0;
-      }
-      else {
-        const startTime = performance.now();
-        global.eval(code);
+            
+      const startTime = performance.now();
+      global.eval(code);
 
-        // End measuring the execution time
-        const endTime = performance.now();
+      // End measuring the execution time
+      const endTime = performance.now();
 
-        // Calculate the elapsed time in milliseconds
-        const executionTime = (endTime - startTime)/1000;
-        
-        let cellContext = this.state.cellContext_data[cellIndex];
-        cellContext['executionTime'] = executionTime.toFixed(2);
-        this.setState(prevState => {
-          const newCellContextData = [...prevState.cellContext_data];
-          newCellContextData[cellIndex] = cellContext;
-          return { cellContext_data: newCellContextData };
-        });
+      // Calculate the elapsed time in milliseconds
+      const executionTime = (endTime - startTime)/1000;
+      
+      let cellContext = this.state.cellContext_data[cellIndex];
+      cellContext['executionTime'] = executionTime.toFixed(2);
+      this.setState(prevState => {
+        const newCellContextData = [...prevState.cellContext_data];
+        newCellContextData[cellIndex] = cellContext;
+        return { cellContext_data: newCellContextData };
+      });
 
 
-      }
+      
     }
     catch (error) {
       let cellContext = this.state.cellContext_data[cellIndex];
@@ -221,10 +239,10 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     }
 
 
-    if (plotly_output.length === 0) {
+    if (html_element.length === 0) {
       let cellContext = this_component.state.cellContext_data[cellIndex];
       cellContext['output'] = output;
-      cellContext['plotly_input'] = plotly_output;
+      cellContext['html_element'] = '';  // null if no plotly input
       this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
@@ -233,12 +251,11 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     }
     else {
 
-      const data = plotly_output[0].data;
-      const layout = plotly_output[0].layout;
+      const data = html_element[0];  // take 0th html element from list
+      
       // createGraph(data, layout, container);
       let cellContext = this_component.state.cellContext_data[cellIndex];
-      cellContext['plotly_input']['data'] = data;
-      cellContext['plotly_input']['layout'] = layout;
+      cellContext['html_element'] = data;
       this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
@@ -299,7 +316,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         output: [],
         editorsValue: '',
         rows: 5,
-        plotly_input: {},
+        html_element: '',
         executionTime : 0
       };
 
@@ -377,7 +394,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData.map((item, index) => {
           newCellContextData[index]['output'] = [];
-          newCellContextData[index]['plotly_input'] = {};
+          newCellContextData[index]['html_element'] = '';
           newCellContextData[index]['executionTime'] = 0;
 
 
@@ -389,7 +406,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex]['output'] = [];
-        newCellContextData[cellIndex]['plotly_input'] = {};
+        newCellContextData[cellIndex]['html_element'] = '';
         newCellContextData[cellIndex]['executionTime'] = 0;
         return { 'cellContext_data': newCellContextData };
       });
@@ -439,7 +456,7 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} plotly_input={item.plotly_input} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {this.state.cellContext_data[index].executionTime} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} html_element={item.html_element} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {this.state.cellContext_data[index].executionTime} />
                 })
               }
             </div>

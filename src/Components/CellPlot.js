@@ -9,47 +9,27 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 class CellPlot extends Component {
   constructor(props) {
     super(props);
-    this.plotRef = React.createRef();
-  }
-
-  componentDidUpdate() {
-    const { cellindex_value, plotly_input } = this.props;
-    try {
-      Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
-    }
-    catch (error) {
-      return;
-    }
-  }
-  componentDidMount() {
-    const { cellindex_value, plotly_input } = this.props;
-    try {
-      Plot.newPlot(this.plotRef.current, plotly_input.data, plotly_input.layout);
-    }
-    catch (error) {
-
-      return;
-    }
   }
 
 
   render() {
-    const { cellindex_value } = this.props;
-    return <div style={{ 'display': 'flex', 'minHeight': '400px' }}>
+    const { cellindex_value , html_element } = this.props;
 
-      <div className="prompt output_prompt">
-        <bdi>Out[{cellindex_value + 1}]:</bdi>
-        <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
-          <FontAwesomeIcon icon={faTrash} style={{'color':'black'}} />
-        </Button>
-      </div>
+    if (!html_element || html_element.trim() === '') {
+      return null;
+    }
 
-
-      <div id={`graph_plan_${cellindex_value}`} ref={this.plotRef}>
-
-      </div>
-    </div>;
+    return  (<div style={{ 'display': 'flex', 'minHeight': '400px' }}>
+            <div className="prompt output_prompt">
+              <bdi>Out[{cellindex_value + 1}]:</bdi>
+              <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
+                <FontAwesomeIcon icon={faTrash} style={{'color':'black'}} />
+              </Button>
+            </div>
+            <div id={`graph_plan_${cellindex_value}`} ref={this.plotRef} dangerouslySetInnerHTML={{ __html: html_element }}>
+            </div>
+          </div>);
   }
 }
 
-export default CellPlot;
+export default React.memo(CellPlot);
