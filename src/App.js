@@ -138,8 +138,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
     let output = [];
     let plotly_output = [];
 
-    global.show = function (data) {
-      output.push(data);
+    global.show = function (...data) {
+      output.push(data.join(' '));
     };
 
     global.show_graph = (data, layout) => {
@@ -198,10 +198,8 @@ layout= {'width': 320, 'height': 240, 'title': 'A Fancy Plot'} `,
         // Calculate the elapsed time in milliseconds
         const executionTime = (endTime - startTime)/1000;
         
-        console.log('executionTime',executionTime);
-
         let cellContext = this.state.cellContext_data[cellIndex];
-        cellContext['executionTime'] = executionTime;
+        cellContext['executionTime'] = executionTime.toFixed(2);
         this.setState(prevState => {
           const newCellContextData = [...prevState.cellContext_data];
           newCellContextData[cellIndex] = cellContext;
