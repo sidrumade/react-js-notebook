@@ -179,7 +179,7 @@ class App extends React.Component {
     };
 
     global.insertHTML = (element) => {
-      html_element.push(element);
+      html_element.push(`${element}`);
     }
 
     global.loadLibrary=(libraryUrl)=> {
