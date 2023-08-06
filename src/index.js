@@ -11,11 +11,8 @@ const Routing = () => {
   return(
     <Router>
     <Routes>
-        {/* <Route exact path="/" element={<App />} /> */}
         <Route path="*" element={<App />} />
         <Route path="/help" element={<App />} />
-
-        
     </Routes>
 </Router>
   )

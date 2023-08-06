@@ -2,7 +2,6 @@
 import React from 'react';
 import './App.css';
 import './notebook.css';
-import * as d3 from "d3";
 import HeaderComponent from './Components/HeaderComponent';
 import CellComponent from './Components/CellComponent';
 import InsertCellBelow from './Utils/InsertCellBelow';
@@ -12,9 +11,6 @@ import MoveCellUp from './Utils/MoveCellUp';
 import DeleteCell from './Utils/DeleteCell';
 import HelpComponent from './Components/HelpComponent';
 import { Button, Modal } from 'react-bootstrap';
-
-
-import * as Plotly from 'plotly.js';
 
 import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
@@ -52,6 +48,15 @@ class App extends React.Component {
       showHelp:false,
       cellContext_data: [
         {
+          cellindex_value: 0,
+          output: [],
+          editorsValue:`loadLibrary('https://cdn.plot.ly/plotly-2.24.1.min.js');`,
+          rows: 1,
+          error: '',
+          html_element: '',
+          executionTime : 0
+        },
+        {
           cellindex_value: 1,
           output: [],
           editorsValue: `insertHTML("<div style='height:350px;width:600px;' id='myDiv' ></div>")`,
@@ -61,7 +66,7 @@ class App extends React.Component {
           executionTime : 0
         },
         {
-        cellindex_value: 0,
+        cellindex_value: 2,
         output: [],
         editorsValue: `var frames = [
           {name: 'sine', data: [{x: [], y: []}]},
@@ -196,9 +201,6 @@ class App extends React.Component {
       document.head.appendChild(script);
     }
 
-
-    global.d3 = d3;
-    global.Plotly = Plotly;
 
 
 
