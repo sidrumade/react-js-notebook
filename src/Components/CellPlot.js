@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Plot from 'plotly.js';
-import * as d3 from "d3";
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";

@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons';
 import Alert from 'react-bootstrap/Alert';
 import CellPlot from './CellPlot';
-import * as d3 from "d3";
 import { Button } from 'react-bootstrap';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 

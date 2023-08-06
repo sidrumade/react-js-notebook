@@ -6,7 +6,7 @@ const HelpComponent = () => {
     return (<div className="helpcomponent">
     <h4>Server Information:</h4>
     <p>You are using Javascript notebook.<br></br>
-    The version of the notebook server is: <b>1.0.0</b>
+    The version of the notebook server is: <b>1.2.0</b>
     <br></br>
     <br></br>
     <p className = "title">Shortcut1 (Run Current Cell)</p>
@@ -21,9 +21,9 @@ const HelpComponent = () => {
     <p className = "title"> Load External Library</p>
     <pre>loadLibrary('lib url');</pre>
 
-    <p className = "title">Plotly Plot</p>
-    <pre>show_graph(data,layout);</pre>
-    <p>Note: Data block and plotting block should be in saperate cell</p>
+    <p className = "title">Insert Html Element </p>
+    <pre>insertHTML('html code');</pre>
+    
 
 
 
