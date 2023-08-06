@@ -1,26 +1,35 @@
-# Use an official Node.js runtime as the base image
-FROM node:18-alpine
+# Use the official Node.js LTS (Long Term Support) image as the base image for building the app
+FROM node:lts as builder
 
-# Set the working directory in the container
-WORKDIR /app
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json files to the container
+# Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
-# Install the dependencies
+# Install dependencies
 RUN npm install
 
-# Install the latest version of the serve package
-RUN npm install serve@latest
-
-# Copy the remaining application files to the container
+# Copy the rest of the application files to the container
 COPY . .
 
-# Build the React app
-RUN NODE_OPTIONS="--max-old-space-size=8192" npm run build -- --max-workers=1
+# Build the React app for production
+RUN npm run build
 
-# Expose the port on which the React app will run
+# Use the official Node.js LTS (Long Term Support) image as the base image for serving the React app
+FROM node:lts
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Install the 'serve' module globally in the container
+RUN npm install -g serve
+
+# Copy the built React app from the previous stage to the container
+COPY --from=builder /usr/src/app/build ./build
+
+# Expose the port on which your Node.js application will listen
 EXPOSE 3000
 
-# Start the React app when the container starts
-CMD ["serve", "-s", "build"]
+# Command to start serving the React app with 'serve'
+CMD ["serve", "-s", "build", "-l", "3000"]
