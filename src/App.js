@@ -210,7 +210,8 @@ class App extends React.Component {
 
             
       const startTime = performance.now();
-      global.eval(code);
+      let raw_output = global.eval(code);
+      output.push(`${raw_output}`);
 
       // End measuring the execution time
       const endTime = performance.now();
@@ -220,6 +221,7 @@ class App extends React.Component {
       
       let cellContext = this.state.cellContext_data[cellIndex];
       cellContext['executionTime'] = executionTime.toFixed(2);
+      console.log(cellContext['output'],'=====after push');
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
         newCellContextData[cellIndex] = cellContext;
