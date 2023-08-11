@@ -1,4 +1,4 @@
-# JavaScript Notebook (JSNB) [Try here](https://legendary-dasik-d57a27.netlify.app). 
+# JavaScript Notebook (JSNB) [Try here](https://moonlit-tanuki-508870.netlify.app). 
 Notebook for javascript experimentation (in the browser). Overview:
 - Easy to use javascript experimentation tool.
 - Runs with backend of node.js/npm .  
@@ -20,7 +20,7 @@ Notebook for javascript experimentation (in the browser). Overview:
 ### 3. `npm run build`
 ### 4. `npm install -g serve`
 ### 5. `serve -s build`
-### 6. You can also try the hosted version (without downloading anything) here: [( https://legendary-dasik-d57a27.netlify.app )]( https://legendary-dasik-d57a27.netlify.app )
+### 6. You can also try the hosted version (without downloading anything) here: [( https://moonlit-tanuki-508870.netlify.app )]( https://moonlit-tanuki-508870.netlify.app )
 ### 7. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
 
 ## Features
