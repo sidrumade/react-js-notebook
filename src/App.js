@@ -16,8 +16,6 @@ import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
 import FileExplorer from './Components/FileExplorer';
 
-import { FontAwesomeIcon  } from '@fortawesome/react-fontawesome';
-
 
 
 // import run from './Comonents/lib';
@@ -193,6 +191,7 @@ class App extends React.Component {
       script.async = true;
     
       const callback = () => {
+        alert('Script has been loaded');
         console.log(`${libraryUrl} loaded`);
       };
     
@@ -211,7 +210,11 @@ class App extends React.Component {
             
       const startTime = performance.now();
       let raw_output = global.eval(code);
-      output.push(`${raw_output}`);
+      if(raw_output === undefined  | typeof(raw_output) === 'object'){
+
+      }else{
+        output.push(`${raw_output}`);
+      }
 
       // End measuring the execution time
       const endTime = performance.now();
@@ -400,6 +403,7 @@ class App extends React.Component {
           newCellContextData[index]['output'] = [];
           newCellContextData[index]['html_element'] = '';
           newCellContextData[index]['executionTime'] = 0;
+          return newCellContextData;
 
 
         });
