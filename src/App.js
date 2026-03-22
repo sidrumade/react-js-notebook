@@ -14,7 +14,7 @@ import { Button, Modal } from 'react-bootstrap';
 
 import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
-import FileExplorer from './Components/FileExplorer';
+
 import kernelManager from './KernelManager';
 
 // import run from './Comonents/lib';
@@ -22,126 +22,24 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.fileInputRef = React.createRef();
+
     this.queryParams = new URLSearchParams(window.location.search);
     this.notebookHash = this.queryParams.get('notebook_hash');
-    this.stateData = null;
-    this.notebook_data = {};
     if (this.notebookHash == undefined) {
-      this.stateData = null;
       this.notebookHash = generateHash()
     }
-    else {
-      this.stateData = localStorage.getItem(`stateData#${this.notebookHash}`);
-      if (this.stateData) {
-        this.notebook_data = JSON.parse(this.stateData);
-      }
-    }
 
-    this.state = this.stateData !== null ? JSON.parse(this.stateData) : {
+    this.state = {
+      isLoaded: false,
       notebook_hash: this.notebookHash,
       notebook_name: 'untitled',
-      showHelp:false,
-      cellContext_data: [
-        {
-          id: generateHash(),
-          cell_type: 'code',
-          execution_count: null,
-          is_executing: false,
-          cellindex_value: 0,
-          output: [],
-          editorsValue:`// Using markdown
-// Try changing this cell to markdown via Header Controls or keep it as Javascript`,
-          rows: 3,
-          error: '',
-          html_element: '',
-          executionTime : 0
-        },
-        {
-          id: generateHash(),
-          cell_type: 'code',
-          execution_count: null,
-          is_executing: false,
-          cellindex_value: 1,
-          output: [],
-          editorsValue: `insertHTML("<div style='height:350px;width:600px;' id='myDiv' ></div>")`,
-          rows: 1,
-          error: '',
-          html_element: '',
-          executionTime : 0
-        },
-        {
-        id: generateHash(),
-        cell_type: 'code',
-        execution_count: null,
-        is_executing: false,
-        cellindex_value: 2,
-        output: [],
-        editorsValue: `var frames = [
-          {name: 'sine', data: [{x: [], y: []}]},
-          {name: 'cosine', data: [{x: [], y: []}]},
-          {name: 'circle', data: [{x: [], y: []}]},
-        ];
-        
-        var n = 100;
-        for (var i = 0; i < n; i++) {
-          var t = i / (n - 1) * 2 - 1;
-        
-          // A sine wave:
-          frames[0].data[0].x[i] = t * Math.PI;
-          frames[0].data[0].y[i] = Math.sin(t * Math.PI);
-        
-          // A cosine wave:
-          frames[1].data[0].x[i] = t * Math.PI;
-          frames[1].data[0].y[i] = Math.cos(t * Math.PI);
-        
-          // A circle:
-          frames[2].data[0].x[i] = Math.sin(t * Math.PI);
-          frames[2].data[0].y[i] = Math.cos(t * Math.PI);
-        }
-        
-        Plotly.newPlot('myDiv', [{
-          x: frames[0].data[0].x,
-          y: frames[0].data[0].y,
-          line: {simplify: false},
-        }], {
-          xaxis: {range: [-Math.PI, Math.PI]},
-          yaxis: {range: [-1.2, 1.2]},
-          updatemenus: [{
-            buttons: [
-              {method: 'animate', args: [['sine']], label: 'sine'},
-              {method: 'animate', args: [['cosine']], label: 'cosine'},
-              {method: 'animate', args: [['circle']], label: 'circle'}
-            ]
-          }]
-        }).then(function() {
-          Plotly.addFrames('myDiv', frames);
-        });
-        `,
-        rows: 40,
-        error: '',
-        html_element: '',
-        executionTime : 0
-      },
-      ],
+      showHelp: false,
+      cellContext_data: [],
       run_all: false,
       active_cell_index: 0,
-
       folders: [],
       currentFolder: null,
-    }
-
-
-
-
-    // Polyfill loaded states to ensure compatibility
-    this.state.cellContext_data = this.state.cellContext_data.map(cell => ({
-      ...cell,
-      id: cell.id || generateHash(),
-      cell_type: cell.cell_type || 'code',
-      execution_count: cell.execution_count || null,
-      is_executing: false
-    }));
+    };
 
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -170,6 +68,46 @@ class App extends React.Component {
     this.setupKernel();
     window.addEventListener('beforeunload', this.handleUnload);
     window.addEventListener('storage', this.handleStorageChange);
+
+    fetch(`http://localhost:3001/api/notebooks/${this.notebookHash}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then(data => {
+        data.cellContext_data = (data.cellContext_data || []).map(cell => ({
+          ...cell,
+          id: cell.id || generateHash(),
+          cell_type: cell.cell_type || 'code',
+          execution_count: cell.execution_count || null,
+          is_executing: false
+        }));
+        this.setState({ ...data, isLoaded: true });
+      })
+      .catch((e) => {
+        // Fallback to default
+        this.setState({
+          isLoaded: true,
+          notebook_hash: this.notebookHash,
+          notebook_name: 'untitled',
+          showHelp: false,
+          cellContext_data: [
+            {
+              id: generateHash(),
+              cell_type: 'code',
+              execution_count: null,
+              is_executing: false,
+              cellindex_value: 0,
+              output: [],
+              editorsValue: `// Using markdown\n// Try changing this cell to markdown via Header Controls or keep it as Javascript`,
+              rows: 3,
+              error: '',
+              html_element: '',
+              executionTime : 0
+            }
+          ]
+        });
+      });
   }
 
   componentWillUnmount() {
@@ -257,15 +195,20 @@ class App extends React.Component {
   }
 
   componentDidUpdate() {
+    if (!this.state.isLoaded) return;
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
     }
     this.saveTimeout = setTimeout(() => {
       try {
-        localStorage.setItem(`stateData#${this.notebookHash}`, JSON.stringify(this.state));
+        fetch(`http://localhost:3001/api/notebooks/${this.notebookHash}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.state)
+        }).catch(e => console.error('Error saving to local server', e));
       }
       catch {
-        console.log('Error in saving state.');
+        console.log('Error in executing fetch.');
       }
     }, 1000);
   }
@@ -505,10 +448,7 @@ class App extends React.Component {
           handleInterruptKernel={this.handleInterruptKernel}
           handleRestartKernel={this.handleRestartKernel}
           handleRunAll={this.handleRunAll}
-        >
-          <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
-
-        </HeaderComponent>
+        />
 
 
         <div id="notebook_panel">

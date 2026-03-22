@@ -27,11 +27,7 @@ const HeaderComponent = (props) => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <NavDropdown title="File" id="basic-nav-dropdown">
-                                <NavDropdown.Item onClick = { (e)=> {window.open(`/`, '_blank');} }>New Notebook</NavDropdown.Item>
-                                {props.children}
-                                <NavDropdown.Item onClick={props.handleSaveClick}>Save</NavDropdown.Item>
-                            </NavDropdown>
+
 
                             <NavDropdown title="Tools" id="basic-nav-dropdown">
                                 <NavDropdown.Item >

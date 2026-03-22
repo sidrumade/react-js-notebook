@@ -10,25 +10,18 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Collect all notebooks from localStorage
-    const saved = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.startsWith('stateData#')) {
-        try {
-          const raw = localStorage.getItem(key);
-          const parsed = JSON.parse(raw);
-          saved.push({
-            hash: parsed.notebook_hash || key.split('#')[1],
-            name: parsed.notebook_name || 'untitled',
-            lastUpdated: new Date().toLocaleTimeString(), // Or actual timestamp if we saved it
-          });
-        } catch (e) {
-          console.error('Error parsing stored notebook', e);
+    // Collect all notebooks from backend
+    fetch('http://localhost:3001/api/notebooks')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error && Array.isArray(data)) {
+          // ensure data elements have proper structure as UI expects
+          setNotebooks(data);
         }
-      }
-    }
-    setNotebooks(saved);
+      })
+      .catch(err => {
+        console.error("Error fetching notebooks", err);
+      });
   }, []);
 
   useEffect(() => {
@@ -70,9 +63,47 @@ const Dashboard = () => {
       folders: [],
       currentFolder: null,
     };
-    localStorage.setItem(`stateData#${hash}`, JSON.stringify(newNotebookState));
-    setNotebooks([...notebooks, { hash, name: 'untitled', lastUpdated: new Date().toLocaleTimeString() }]);
-    window.open(`/notebook?notebook_hash=${hash}`, '_blank');
+    fetch(`http://localhost:3001/api/notebooks/${hash}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newNotebookState)
+    }).then(() => {
+      setNotebooks([...notebooks, { hash, name: 'untitled', lastUpdated: new Date().toLocaleTimeString() }]);
+      window.open(`/notebook?notebook_hash=${hash}`, '_blank');
+    }).catch(e => console.error("Error creating new notebook", e));
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      try {
+        const fileContents = e.target.result;
+        const stateFromFile = JSON.parse(fileContents);
+        
+        const newHash = generateHash();
+        stateFromFile.notebook_hash = newHash;
+        
+        let notebook_name = stateFromFile.notebook_name || 'untitled';
+
+        fetch(`http://localhost:3001/api/notebooks/${newHash}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(stateFromFile)
+        }).then(() => {
+          setNotebooks(prev => [...prev, { hash: newHash, name: notebook_name, lastUpdated: new Date().toLocaleTimeString() }]);
+          window.open(`/notebook?notebook_hash=${newHash}`, '_blank');
+        }).catch(e => console.error("Error parsing/uploading notebook file", e));
+
+      } catch (err) {
+        console.error("Error parsing notebook file", err);
+        alert("Invalid notebook file");
+      }
+    };
+    fileReader.readAsText(file);
+    event.target.value = null; // reset input
   };
 
   const shutdownKernel = (hash) => {
@@ -82,10 +113,13 @@ const Dashboard = () => {
 
   const deleteNotebook = (hash) => {
     if (window.confirm("Are you sure you want to delete this notebook permanently?")) {
-      localStorage.removeItem(`stateData#${hash}`);
-      kernelManager.shutdownKernel(hash);
-      setNotebooks(notebooks.filter(nb => nb.hash !== hash));
-      setActiveKernels(kernelManager.getActiveKernels());
+      fetch(`http://localhost:3001/api/notebooks/${hash}`, {
+        method: 'DELETE'
+      }).then(() => {
+        kernelManager.shutdownKernel(hash);
+        setNotebooks(notebooks.filter(nb => nb.hash !== hash));
+        setActiveKernels(kernelManager.getActiveKernels());
+      }).catch(e => console.error("Error deleting notebook", e));
     }
   };
 
@@ -97,6 +131,18 @@ const Dashboard = () => {
           <p className="text-muted">Local file directory and kernel management.</p>
         </Col>
         <Col className="text-end">
+          <input
+            type="file"
+            accept=".jsnb"
+            id="upload-notebook-input"
+            style={{ display: 'none' }}
+            onChange={handleFileUpload}
+          />
+          <label htmlFor="upload-notebook-input" className="me-2">
+            <Button variant="outline-primary" as="span">
+              Open Notebook
+            </Button>
+          </label>
           <Button variant="success" onClick={handleNewNotebook}>+ New Notebook</Button>
         </Col>
       </Row>
