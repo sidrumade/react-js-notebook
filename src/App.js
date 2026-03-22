@@ -15,8 +15,7 @@ import { Button, Modal } from 'react-bootstrap';
 import generateHash from './Utils/generateHash';
 import { saveAs } from 'file-saver';
 import FileExplorer from './Components/FileExplorer';
-
-
+import kernelManager from './KernelManager';
 
 // import run from './Comonents/lib';
 class App extends React.Component {
@@ -34,9 +33,8 @@ class App extends React.Component {
     }
     else {
       this.stateData = localStorage.getItem(`stateData#${this.notebookHash}`);
-      this.notebook_data = JSON.parse(this.stateData);
-      if (this.notebook_data.notebookHash === this.notebookHash) {
-
+      if (this.stateData) {
+        this.notebook_data = JSON.parse(this.stateData);
       }
     }
 
@@ -46,15 +44,24 @@ class App extends React.Component {
       showHelp:false,
       cellContext_data: [
         {
+          id: generateHash(),
+          cell_type: 'code',
+          execution_count: null,
+          is_executing: false,
           cellindex_value: 0,
           output: [],
-          editorsValue:`loadLibrary('https://cdn.plot.ly/plotly-2.24.1.min.js');`,
-          rows: 1,
+          editorsValue:`// Using markdown
+// Try changing this cell to markdown via Header Controls or keep it as Javascript`,
+          rows: 3,
           error: '',
           html_element: '',
           executionTime : 0
         },
         {
+          id: generateHash(),
+          cell_type: 'code',
+          execution_count: null,
+          is_executing: false,
           cellindex_value: 1,
           output: [],
           editorsValue: `insertHTML("<div style='height:350px;width:600px;' id='myDiv' ></div>")`,
@@ -64,6 +71,10 @@ class App extends React.Component {
           executionTime : 0
         },
         {
+        id: generateHash(),
+        cell_type: 'code',
+        execution_count: null,
+        is_executing: false,
         cellindex_value: 2,
         output: [],
         editorsValue: `var frames = [
@@ -123,6 +134,15 @@ class App extends React.Component {
 
 
 
+    // Polyfill loaded states to ensure compatibility
+    this.state.cellContext_data = this.state.cellContext_data.map(cell => ({
+      ...cell,
+      id: cell.id || generateHash(),
+      cell_type: cell.cell_type || 'code',
+      execution_count: cell.execution_count || null,
+      is_executing: false
+    }));
+
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.run = this.run.bind(this);
@@ -138,8 +158,79 @@ class App extends React.Component {
     this.handleClearOutput = this.handleClearOutput.bind(this);
     this.toggleHelpModalOpen = this.toggleHelpModalOpen.bind(this);
     this.handleRunThisCell = this.handleRunThisCell.bind(this);
+    this.changeCellType = this.changeCellType.bind(this);
+    this.handleInterruptKernel = this.handleInterruptKernel.bind(this);
+    this.handleRestartKernel = this.handleRestartKernel.bind(this);
+    this.handleRunAll = this.handleRunAll.bind(this);
     this.saveTimeout = null;
 
+  }
+
+  componentDidMount() {
+    this.setupKernel();
+  }
+
+  componentWillUnmount() {
+    const worker = kernelManager.getKernel(this.notebookHash);
+    if(worker) worker.removeEventListener('message', this.handleKernelMessage);
+  }
+
+  setupKernel() {
+    const worker = kernelManager.getKernel(this.notebookHash);
+    worker.addEventListener('message', this.handleKernelMessage);
+  }
+
+  handleKernelMessage = (e) => {
+    const { type, cellId, data, status, raw_output, error, executionCount, executionTime } = e.data;
+    if (type === 'output') {
+      this.setState(prevState => {
+        const newCells = [...prevState.cellContext_data];
+        const cellIndex = newCells.findIndex(c => c.id === cellId);
+        if (cellIndex > -1) {
+          const newOutput = [...newCells[cellIndex].output, data];
+          newCells[cellIndex] = { ...newCells[cellIndex], output: newOutput };
+        }
+        return { cellContext_data: newCells };
+      });
+    } else if (type === 'html') {
+      this.setState(prevState => {
+        const newCells = [...prevState.cellContext_data];
+        const cellIndex = newCells.findIndex(c => c.id === cellId);
+        if (cellIndex > -1) {
+          newCells[cellIndex] = { ...newCells[cellIndex], html_element: data };
+        }
+        return { cellContext_data: newCells };
+      });
+    } else if (type === 'status') {
+      this.setState(prevState => {
+        const newCells = [...prevState.cellContext_data];
+        const cellIndex = newCells.findIndex(c => c.id === cellId);
+        if (cellIndex > -1) {
+          newCells[cellIndex] = { ...newCells[cellIndex], is_executing: status === 'executing' };
+        }
+        return { cellContext_data: newCells };
+      });
+    } else if (type === 'done') {
+      this.setState(prevState => {
+        const newCells = [...prevState.cellContext_data];
+        const cellIndex = newCells.findIndex(c => c.id === cellId);
+        if (cellIndex > -1) {
+          let updatedOutput = [...newCells[cellIndex].output];
+          if (raw_output !== null && raw_output !== undefined) {
+             updatedOutput.push(raw_output);
+          }
+          newCells[cellIndex] = { 
+            ...newCells[cellIndex],
+            is_executing: false,
+            execution_count: executionCount !== undefined ? executionCount : newCells[cellIndex].execution_count,
+            executionTime: executionTime !== undefined ? executionTime : newCells[cellIndex].executionTime,
+            error: error || '',
+            output: updatedOutput
+          };
+        }
+        return { cellContext_data: newCells };
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -182,134 +273,36 @@ class App extends React.Component {
 
 
   run = (cellIndex, this_component) => {
-    let output = [];
-    let html_element = [];
-
-    global.show = function (...data) {
-      output.push(data.join(' '));
-    };
-
-    global.insertHTML = (element) => {
-      html_element.push(`${element}`);
-    }
-
-    global.loadLibrary=(libraryUrl)=> {
-      const script = document.createElement('script');
-      script.src = libraryUrl;
-      script.async = true;
-    
-      const callback = () => {
-        alert('Script has been loaded');
-        console.log(`${libraryUrl} loaded`);
-      };
-    
-      script.addEventListener('load', callback);
-    
-      document.head.appendChild(script);
-    }
-
-
-
-
-    // execute js code here
     let code = this_component.state.cellContext_data[cellIndex].editorsValue;
-    try {
+    const cellId = this_component.state.cellContext_data[cellIndex].id;
+    const cellType = this_component.state.cellContext_data[cellIndex].cell_type;
 
-            
-      const startTime = performance.now();
-      let raw_output = global.eval(code);
-      if(raw_output === undefined  | typeof(raw_output) === 'object'){
-
-      }else{
-        output.push(`${raw_output}`);
-      }
-
-      // End measuring the execution time
-      const endTime = performance.now();
-
-      // Calculate the elapsed time in milliseconds
-      const executionTime = (endTime - startTime)/1000;
-      
-      this.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = {
-          ...newCellContextData[cellIndex],
-          executionTime: executionTime.toFixed(2)
-        };
-        return { cellContext_data: newCellContextData };
-      });
-
-
-      
-    }
-    catch (error) {
-      this.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = {
-          ...newCellContextData[cellIndex],
-          error: error.toString()
-        };
-        return { cellContext_data: newCellContextData };
-      });
-      return 0;
+    if (cellType === 'markdown') {
+       // Markdowns don't evaluate
+       return 0;
     }
 
+    // Clear previous output and set executing state
+    this_component.setState(prevState => {
+      const newCellContextData = [...prevState.cellContext_data];
+      newCellContextData[cellIndex] = {
+        ...newCellContextData[cellIndex],
+        output: [],
+        html_element: '',
+        error: '',
+        is_executing: true
+      };
+      return { cellContext_data: newCellContextData };
+    });
 
-    if (html_element.length === 0) {
-      this_component.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = {
-          ...newCellContextData[cellIndex],
-          output: output,
-          html_element: ''
-        };
-        return { cellContext_data: newCellContextData };
-      });
-    }
-    else {
-
-      const data = html_element[0];  // take 0th html element from list
-      
-      this_component.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = {
-          ...newCellContextData[cellIndex],
-          html_element: data
-        };
-        return { cellContext_data: newCellContextData };
-      }, () => { });
-
-    }
-
+    const worker = kernelManager.getKernel(this.notebookHash);
+    worker.postMessage({ command: 'execute', cellId, code });
+    return 1;
   };
 
 
   evalCode = (cellIndex) => {
-    try {
-      const out = this.run(cellIndex, this);
-      if (out != 0) {
-        this.setState(prevState => {
-          const newCellContextData = [...prevState.cellContext_data];
-          newCellContextData[cellIndex] = {
-            ...newCellContextData[cellIndex],
-            error: ''
-          };
-          return { cellContext_data: newCellContextData };
-        });
-      }
-
-    } catch (error) {
-
-      this.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = {
-          ...newCellContextData[cellIndex],
-          error: error.toString()
-        };
-        return { cellContext_data: newCellContextData };
-      });
-    }
-
+    this.run(cellIndex, this);
   };
 
   handleRunThisCell =(cell_index)=>{
@@ -347,6 +340,36 @@ class App extends React.Component {
 
   changeActiveCellIndex = (cellIndex) => {
     this.setState({ active_cell_index: cellIndex });
+  }
+
+  changeCellType = (cellIndex, type) => {
+    this.setState(prevState => {
+       const newCells = [...prevState.cellContext_data];
+       newCells[cellIndex] = { ...newCells[cellIndex], cell_type: type };
+       return { cellContext_data: newCells };
+    });
+  }
+
+  handleInterruptKernel = () => {
+    kernelManager.interruptKernel(this.notebookHash);
+    this.setupKernel(); // Remount listener
+  }
+
+  handleRestartKernel = () => {
+    kernelManager.restartKernel(this.notebookHash);
+    this.setupKernel();
+    // Clear Outputs and cell execution states
+    this.setState(prevState => ({
+      cellContext_data: prevState.cellContext_data.map(c => ({
+         ...c, output: [], html_element: '', error: '', execution_count: null, is_executing: false
+      }))
+    }));
+  }
+
+  handleRunAll = () => {
+    this.state.cellContext_data.forEach((_, index) => {
+      this.evalCode(index);
+    });
   }
   InsertCellBelowHandler = (cellIndex) => {
     InsertCellBelow({ 'this_component': this, 'force': true, 'cellIndex': cellIndex });
@@ -463,6 +486,9 @@ class App extends React.Component {
           handleDownloadHTML={this.handleDownloadHTML}
           handleClearOutput={this.handleClearOutput}
           toggleHelpModalOpen = {this.toggleHelpModalOpen}
+          handleInterruptKernel={this.handleInterruptKernel}
+          handleRestartKernel={this.handleRestartKernel}
+          handleRunAll={this.handleRunAll}
         >
           <FileExplorer notebook_name={this.state.notebook_name} notebook_hash={this.state.notebook_hash} fileInputRef={this.fileInputRef} />
 
@@ -474,7 +500,26 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={this.handleKeyDown} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} html_element={item.html_element} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {item.executionTime} />
+                  return <CellComponent 
+                            rows={item.rows} 
+                            key={item.id || index} 
+                            cellindex={index} 
+                            editorsValue={item.editorsValue} 
+                            handleEditorChange={this.handleEditorChange} 
+                            handleKeyDown={this.handleKeyDown} 
+                            output={item.output || []} 
+                            active_cell_index={this.state.active_cell_index} 
+                            changeActiveCellIndex={this.changeActiveCellIndex} 
+                            error={item.error} 
+                            html_element={item.html_element} 
+                            handleClearOutput={this.handleClearOutput} 
+                            handleRunThisCell={this.handleRunThisCell} 
+                            executionTime={item.executionTime} 
+                            cell_type={item.cell_type}
+                            execution_count={item.execution_count}
+                            is_executing={item.is_executing}
+                            changeCellType={this.changeCellType}
+                          />
                 })
               }
             </div>

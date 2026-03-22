@@ -7,8 +7,36 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 class CellPlot extends Component {
   constructor(props) {
     super(props);
+    this.plotRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.executeScripts();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.html_element !== this.props.html_element) {
+      this.executeScripts();
+    }
+  }
+
+  executeScripts() {
+    if (this.plotRef.current) {
+      // Find all script tags injected via dangerouslySetInnerHTML
+      const scripts = this.plotRef.current.getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        const scriptCode = scripts[i].innerText;
+        if (scriptCode && scriptCode.trim() !== '') {
+          try {
+            // Strictly evaluate within global window context so functions like `renderPlot` attach properly if needed
+            window.eval(scriptCode);
+          } catch (e) {
+            console.error("Error executing injected script:", e);
+          }
+        }
+      }
+    }
+  }
 
   render() {
     const { cellindex_value , html_element } = this.props;

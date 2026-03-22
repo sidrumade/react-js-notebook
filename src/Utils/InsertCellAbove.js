@@ -1,7 +1,13 @@
+import generateHash from './generateHash';
+
 const InsertCellAbove = (props) => {
 
   const cellIndex = props.cellIndex;
   const cellContext = {
+    id: generateHash(),
+    cell_type: 'code',
+    execution_count: null,
+    is_executing: false,
     cellindex_value: cellIndex,
     output: [],
     editorsValue: '',

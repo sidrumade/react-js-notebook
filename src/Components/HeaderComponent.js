@@ -6,6 +6,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import '../header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faPlus, faCut, faCopy, faPaste, faArrowUp, faArrowDown, faPlay, faStop, faRepeat , faRemove , faCode } from "@fortawesome/free-solid-svg-icons";
+import { Form } from 'react-bootstrap';
 
 const HeaderComponent = (props) => {
     return (
@@ -67,6 +68,20 @@ const HeaderComponent = (props) => {
                                 </button>
                                 </NavDropdown.Item>
                             </NavDropdown>
+
+                            <NavDropdown title="Kernel" id="kernel-nav-dropdown">
+                                <NavDropdown.Item onClick={props.handleInterruptKernel}>
+                                  <FontAwesomeIcon icon={faStop} /> Interrupt Kernel
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={props.handleRestartKernel}>
+                                  <FontAwesomeIcon icon={faRepeat} /> Restart Kernel
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item onClick={props.handleRunAll}>
+                                  <FontAwesomeIcon icon={faPlay} /> Run All Cells
+                                </NavDropdown.Item>
+                            </NavDropdown>
+
                             <NavDropdown title="Download As" id="basic-nav-dropdown">
                                 <NavDropdown.Item  onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
                                 <NavDropdown.Item onClick={props.handleSaveClick} >Notebook(.jsnb)</NavDropdown.Item>

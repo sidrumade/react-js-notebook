@@ -1,18 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import Dashboard from './Dashboard';
 import reportWebVitals from './reportWebVitals';
-
 {/* The following line can be included in your src/index.js or App.js file */}
 
 const Routing = () => {
   return(
     <Router>
     <Routes>
-        <Route path="*" element={<App />} />
+        <Route path="/tree" element={<Dashboard />} />
+        <Route path="/notebook" element={<App />} />
         <Route path="/help" element={<App />} />
+        <Route path="*" element={<Navigate to="/tree" replace />} />
     </Routes>
 </Router>
   )
