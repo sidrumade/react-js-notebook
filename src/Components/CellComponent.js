@@ -92,7 +92,11 @@ const CellComponent = memo((props) => {
                   {props.output.map((value, index) => {
                     let outputString;
                     try {
-                      outputString = JSON.stringify(value);
+                      if (typeof value === 'string') {
+                         outputString = value;
+                      } else {
+                         outputString = JSON.stringify(value);
+                      }
                     } catch (err) {
                       outputString = value;
                       outputString = "Error: " + err.message;
@@ -113,6 +117,7 @@ const CellComponent = memo((props) => {
           props.html_element != '' ? <CellPlot
             key={props.cellindex}
             cellindex_value={props.cellindex}
+            execution_count={props.execution_count}
             html_element={props.html_element}
             handleClearOutput = {props.handleClearOutput}
             

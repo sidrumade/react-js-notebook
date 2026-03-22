@@ -39,7 +39,7 @@ class CellPlot extends Component {
   }
 
   render() {
-    const { cellindex_value , html_element } = this.props;
+    const { cellindex_value, execution_count, html_element } = this.props;
 
     if (!html_element || html_element.trim() === '') {
       return null;
@@ -47,7 +47,7 @@ class CellPlot extends Component {
 
     return  (<div style={{ 'display': 'flex', 'minHeight': '400px' }}>
             <div className="prompt output_prompt">
-              <bdi>Out[{cellindex_value + 1}]:</bdi>
+              <bdi>Out[{execution_count !== null ? execution_count : ''}]:</bdi>
               <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={(e) => { this.props.handleClearOutput(cellindex_value); }}>
                 <FontAwesomeIcon icon={faTrash} style={{'color':'black'}} />
               </Button>

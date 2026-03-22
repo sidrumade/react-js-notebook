@@ -61,20 +61,26 @@ class KernelManager {
       const originalError = console.error;
       const originalInfo = console.info;
 
+      const safeSerialize = (val) => {
+         if (typeof val === 'string') return val;
+         try { return JSON.stringify(val); }
+         catch (e) { return String(val); }
+      };
+
       console.log = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(safeSerialize).join(' ') });
          originalLog.apply(console, args);
       };
       console.info = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(safeSerialize).join(' ') });
          originalInfo.apply(console, args);
       };
       console.warn = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'WARN: ' + args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'WARN: ' + args.map(safeSerialize).join(' ') });
          originalWarn.apply(console, args);
       };
       console.error = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'ERROR: ' + args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ') });
+         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'ERROR: ' + args.map(safeSerialize).join(' ') });
          originalError.apply(console, args);
       };
 
