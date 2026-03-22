@@ -21,10 +21,11 @@ const HelpComponent = () => {
     <p className = "title"> Load External Library</p>
     <pre>loadLibrary('lib url');</pre>
 
-    <p className = "title">Insert Html Element </p>
+    <p className = "title">Insert Html Element</p>
     <pre>insertHTML('html code');</pre>
     
-
+    <p className = "title">Execute DOM/UI Script on Main Thread</p>
+    <pre>{"displayOnMainThread('<div id=\"box\"></div>', function(arg) { /* DOM Logic */ }, [arg]);"}</pre>
 
 
     </p>

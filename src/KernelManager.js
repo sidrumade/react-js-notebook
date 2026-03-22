@@ -82,6 +82,12 @@ class KernelManager {
         if (currentCellId) self.postMessage({ type: 'html', cellId: currentCellId, data: html });
       };
 
+      // Advanced Helper: lets you write standard JS functions in the cell, but executes them on the Main UI thread!
+      self.displayOnMainThread = function(html, scriptFunction, args = []) {
+        const scriptStr = '(' + scriptFunction.toString() + ').apply(window, ' + JSON.stringify(args) + ');';
+        self.insertHTML(html + '\\n<script>\\n' + scriptStr + '\\n</script>');
+      };
+
       self.addEventListener('message', async (e) => {
         const { cellId, code, command } = e.data;
         
