@@ -270,13 +270,6 @@ class App extends React.Component {
     }, 1000);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    // Only update the component if the props or state have changed
-    return nextState !== this.state;
-  }
-
-
-
 
 
   handleEditorChange = (newValue, cellindex) => {
