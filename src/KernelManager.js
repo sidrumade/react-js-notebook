@@ -17,7 +17,22 @@ class KernelManager {
     return this.kernels[notebookHash];
   }
 
+  markKernelActive(hash) {
+    let active = JSON.parse(localStorage.getItem('active_kernels') || "[]");
+    if (!active.includes(hash)) {
+        active.push(hash);
+        localStorage.setItem('active_kernels', JSON.stringify(active));
+    }
+  }
+
+  markKernelInactive(hash) {
+    let active = JSON.parse(localStorage.getItem('active_kernels') || "[]");
+    active = active.filter(h => h !== hash);
+    localStorage.setItem('active_kernels', JSON.stringify(active));
+  }
+
   startKernel(notebookHash) {
+    this.markKernelActive(notebookHash);
     // We create a web worker using a blob
     const workerCode = `
       // Worker Kernel Execution Environment
@@ -132,10 +147,11 @@ class KernelManager {
       this.kernels[notebookHash].terminate();
       delete this.kernels[notebookHash];
     }
+    this.markKernelInactive(notebookHash);
   }
 
   getActiveKernels() {
-    return Object.keys(this.kernels);
+    return JSON.parse(localStorage.getItem('active_kernels') || "[]");
   }
 }
 

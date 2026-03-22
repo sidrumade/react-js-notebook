@@ -168,11 +168,34 @@ class App extends React.Component {
 
   componentDidMount() {
     this.setupKernel();
+    window.addEventListener('beforeunload', this.handleUnload);
+    window.addEventListener('storage', this.handleStorageChange);
   }
 
   componentWillUnmount() {
     const worker = kernelManager.getKernel(this.notebookHash);
     if(worker) worker.removeEventListener('message', this.handleKernelMessage);
+    window.removeEventListener('beforeunload', this.handleUnload);
+    window.removeEventListener('storage', this.handleStorageChange);
+    this.handleUnload();
+  }
+
+  handleStorageChange = (e) => {
+    if (e.key === 'active_kernels') {
+      const active = JSON.parse(e.newValue || "[]");
+      if (!active.includes(this.notebookHash)) {
+        // Someone (like the Dashboard tab) remotely stopped this kernel
+        const worker = kernelManager.kernels[this.notebookHash];
+        if (worker) {
+          worker.terminate();
+          delete kernelManager.kernels[this.notebookHash];
+        }
+      }
+    }
+  }
+
+  handleUnload = () => {
+    kernelManager.shutdownKernel(this.notebookHash);
   }
 
   setupKernel() {
