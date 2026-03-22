@@ -138,17 +138,22 @@ class App extends React.Component {
     this.handleClearOutput = this.handleClearOutput.bind(this);
     this.toggleHelpModalOpen = this.toggleHelpModalOpen.bind(this);
     this.handleRunThisCell = this.handleRunThisCell.bind(this);
+    this.saveTimeout = null;
 
   }
 
   componentDidUpdate() {
-    try {
-      localStorage.setItem(`stateData#${this.notebookHash}`, JSON.stringify(this.state));
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
     }
-    catch {
-      console.log('Error in saving state.');
-
-    }
+    this.saveTimeout = setTimeout(() => {
+      try {
+        localStorage.setItem(`stateData#${this.notebookHash}`, JSON.stringify(this.state));
+      }
+      catch {
+        console.log('Error in saving state.');
+      }
+    }, 1000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -164,8 +169,11 @@ class App extends React.Component {
 
     this.setState(prevState => {
       const newCellContextData = [...prevState.cellContext_data];
-      newCellContextData[cellindex]['editorsValue'] = newValue;
-      newCellContextData[cellindex]['rows'] = newValue.split("\n").length;
+      newCellContextData[cellindex] = {
+        ...newCellContextData[cellindex],
+        editorsValue: newValue,
+        rows: newValue.split("\n").length
+      };
       return { cellContext_data: newCellContextData };
     });
 
@@ -222,11 +230,12 @@ class App extends React.Component {
       // Calculate the elapsed time in milliseconds
       const executionTime = (endTime - startTime)/1000;
       
-      let cellContext = this.state.cellContext_data[cellIndex];
-      cellContext['executionTime'] = executionTime.toFixed(2);
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = cellContext;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          executionTime: executionTime.toFixed(2)
+        };
         return { cellContext_data: newCellContextData };
       });
 
@@ -234,11 +243,12 @@ class App extends React.Component {
       
     }
     catch (error) {
-      let cellContext = this.state.cellContext_data[cellIndex];
-      cellContext['error'] = error.toString();
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = cellContext;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          error: error.toString()
+        };
         return { cellContext_data: newCellContextData };
       });
       return 0;
@@ -246,12 +256,13 @@ class App extends React.Component {
 
 
     if (html_element.length === 0) {
-      let cellContext = this_component.state.cellContext_data[cellIndex];
-      cellContext['output'] = output;
-      cellContext['html_element'] = '';  // null if no plotly input
       this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = cellContext;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          output: output,
+          html_element: ''
+        };
         return { cellContext_data: newCellContextData };
       });
     }
@@ -259,15 +270,14 @@ class App extends React.Component {
 
       const data = html_element[0];  // take 0th html element from list
       
-      // createGraph(data, layout, container);
-      let cellContext = this_component.state.cellContext_data[cellIndex];
-      cellContext['html_element'] = data;
       this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = cellContext;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          html_element: data
+        };
         return { cellContext_data: newCellContextData };
       }, () => { });
-
 
     }
 
@@ -278,23 +288,24 @@ class App extends React.Component {
     try {
       const out = this.run(cellIndex, this);
       if (out != 0) {
-        let cellContext = this.state.cellContext_data[cellIndex];
-        cellContext['error'] = '';
-
         this.setState(prevState => {
           const newCellContextData = [...prevState.cellContext_data];
-          newCellContextData[cellIndex] = cellContext;
+          newCellContextData[cellIndex] = {
+            ...newCellContextData[cellIndex],
+            error: ''
+          };
           return { cellContext_data: newCellContextData };
         });
       }
 
     } catch (error) {
 
-      let cellContext = this.state.cellContext_data[cellIndex];
-      cellContext['error'] = error.toString();
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex] = cellContext;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          error: error.toString()
+        };
         return { cellContext_data: newCellContextData };
       });
     }
@@ -397,24 +408,24 @@ class App extends React.Component {
 
     if (cellIndex === undefined) {
       this.setState(prevState => {
-        const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData.map((item, index) => {
-          newCellContextData[index]['output'] = [];
-          newCellContextData[index]['html_element'] = '';
-          newCellContextData[index]['executionTime'] = 0;
-          return newCellContextData;
-
-
-        });
+        const newCellContextData = prevState.cellContext_data.map(item => ({
+          ...item,
+          output: [],
+          html_element: '',
+          executionTime: 0
+        }));
         return { 'cellContext_data': newCellContextData };
       });
     }
     else {
       this.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        newCellContextData[cellIndex]['output'] = [];
-        newCellContextData[cellIndex]['html_element'] = '';
-        newCellContextData[cellIndex]['executionTime'] = 0;
+        newCellContextData[cellIndex] = {
+          ...newCellContextData[cellIndex],
+          output: [],
+          html_element: '',
+          executionTime: 0
+        };
         return { 'cellContext_data': newCellContextData };
       });
     }
@@ -463,7 +474,7 @@ class App extends React.Component {
             <div id="notebook-container" className='container'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={(e) => this.handleKeyDown(e)} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} html_element={item.html_element} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {this.state.cellContext_data[index].executionTime} />
+                  return <CellComponent rows={item.rows} key={index} cellindex={index} editorsValue={item.editorsValue} handleEditorChange={this.handleEditorChange} handleKeyDown={this.handleKeyDown} output={this.state.cellContext_data && this.state.cellContext_data[index] ? this.state.cellContext_data[index].output : []} active_cell_index={this.state.active_cell_index} changeActiveCellIndex={this.changeActiveCellIndex} error={item.error} html_element={item.html_element} handleClearOutput={this.handleClearOutput} handleRunThisCell={this.handleRunThisCell} executionTime = {item.executionTime} />
                 })
               }
             </div>

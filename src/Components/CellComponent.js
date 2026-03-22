@@ -1,5 +1,5 @@
 import Prism from 'prismjs';
-import React from 'react';
+import React, { memo } from 'react';
 import CodeEditor from 'react-simple-code-editor';
 import 'prismjs/themes/prism.css';
 import '../cellstyle.css'
@@ -12,16 +12,16 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 
 
-const CellComponent = (props) => {
+const CellComponent = memo((props) => {
   return (
-    <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={(e) => { props.changeActiveCellIndex(props.cellindex) }}>
+    <div className={`jupyter-cell cell ${props.cellindex === props.active_cell_index ? 'selected' : ''}`} onClick={() => props.changeActiveCellIndex(props.cellindex)}>
       <div style={{ display: 'flex' }} >
         <div className="prompt_container">
           <div className="prompt input_prompt">
             <bdi>In</bdi>&nbsp;[{props.cellindex + 1}]:
           </div>
           <div className={`run_this_cell ${props.cellindex === props.active_cell_index ? '' : 'hide_element'}`} title="Run this cell">
-            <FontAwesomeIcon icon={faStepForward} onClick={ (e)=> props.handleRunThisCell(props.cellindex)} />
+            <FontAwesomeIcon icon={faStepForward} onClick={() => props.handleRunThisCell(props.cellindex)} />
           </div>
           <bdi className='executionTime'>{props.executionTime} Sec.</bdi>
         </div>
@@ -30,7 +30,7 @@ const CellComponent = (props) => {
           rows={props.rows || 5}
           onValueChange={(newValue) => props.handleEditorChange(newValue, props.cellindex)}
           highlight={code => Prism.highlight(code, Prism.languages.javascript)}
-          onKeyDown={(e) => props.handleKeyDown(e)}
+          onKeyDown={props.handleKeyDown}
           padding={10}
           className="input"
           style={{
@@ -52,7 +52,7 @@ const CellComponent = (props) => {
               <div className="run_this_cell"></div>
               <div className="prompt output_prompt">
                 <bdi>Out[{props.cellindex+1}]:</bdi>
-                <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={(e) => { props.handleClearOutput(props.cellindex); }}>
+                <Button className="clear_out_btn" title="delete cell" variant='light' size="sm" onClick={() => props.handleClearOutput(props.cellindex)}>
                   <FontAwesomeIcon icon={faTrash} style={{'color':'black'}}/>
                 </Button>
               </div>
@@ -93,6 +93,6 @@ const CellComponent = (props) => {
 
     </div>
   );
-}
+});
 
 export default CellComponent;
