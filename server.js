@@ -30,16 +30,15 @@ app.get('/api/notebooks', (req, res) => {
                 const filePath = path.join(notebooksDir, f);
                 try {
                     const stats = fs.statSync(filePath);
-                    const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
                     return {
-                        hash: content.notebook_hash || f.replace('.jsnb', ''),
-                        name: content.notebook_name || 'untitled',
+                        hash: f.replace('.jsnb', ''),
+                        name: f.replace('.jsnb', ''),
                         lastUpdated: stats.mtime.toLocaleTimeString(),
-                        lastUpdatedMs: stats.mtimeMs // For sorting if needed
+                        lastUpdatedMs: stats.mtimeMs
                     };
                 } catch (e) {
                     console.error(`Error parsing notebook ${f}:`, e);
-                    return null; // Ignore corrupted files
+                    return null;
                 }
             })
             .filter(nb => nb !== null);
@@ -48,35 +47,90 @@ app.get('/api/notebooks', (req, res) => {
     });
 });
 
-// Get a specific notebook
-app.get('/api/notebooks/:hash', (req, res) => {
-    const filePath = path.join(notebooksDir, `${req.params.hash}.jsnb`);
-    if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: 'Notebook not found on server' });
+// Create a new notebook (auto-handles duplicates by appending numbers)
+app.post('/api/notebooks/new', (req, res) => {
+    let baseName = req.body.notebook_name || 'untitled';
+    let name = baseName;
+    let counter = 1;
+
+    let newFilePath = path.join(notebooksDir, `${name}.jsnb`);
+    while (fs.existsSync(newFilePath)) {
+        name = `${baseName} ${counter}`;
+        newFilePath = path.join(notebooksDir, `${name}.jsnb`);
+        counter++;
     }
+
+    req.body.notebook_name = name;
+    req.body.notebook_hash = name;
+
     try {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        res.json(JSON.parse(content));
-    } catch (e) {
-        res.status(500).json({ error: 'Failed to read or parse notebook file' });
+        fs.writeFileSync(newFilePath, JSON.stringify(req.body, null, 2), 'utf-8');
+        res.json({ success: true, newName: name });
+    } catch(e) {
+        console.error('Error creating notebook:', e);
+        res.status(500).json({ error: 'Failed to create notebook to disk' });
     }
 });
 
-// Save a notebook
-app.post('/api/notebooks/:hash', (req, res) => {
-    const filePath = path.join(notebooksDir, `${req.params.hash}.jsnb`);
+// Get a specific notebook
+app.get('/api/notebooks/:name', (req, res) => {
+    const filePath = path.join(notebooksDir, `${req.params.name}.jsnb`);
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'Notebook not found' });
+    }
     try {
-        fs.writeFileSync(filePath, JSON.stringify(req.body, null, 2), 'utf-8');
-        res.json({ success: true });
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const parsed = JSON.parse(content);
+        // Guarantee inner hash matches file
+        parsed.notebook_name = req.params.name;
+        parsed.notebook_hash = req.params.name;
+        res.json(parsed);
     } catch (e) {
-        console.error('Error saving notebook:', e);
-        res.status(500).json({ error: 'Failed to save notebook to disk' });
+        res.status(500).json({ error: 'Failed to read notebook' });
+    }
+});
+
+// Save (and potentially rename) a notebook
+app.post('/api/notebooks/:name', (req, res) => {
+    const oldName = req.params.name;
+    let newName = req.body.notebook_name;
+    
+    if (!newName || newName.trim() === '') {
+        newName = 'untitled';
+        req.body.notebook_name = newName;
+    }
+
+    const oldFilePath = path.join(notebooksDir, `${oldName}.jsnb`);
+    const newFilePath = path.join(notebooksDir, `${newName}.jsnb`);
+
+    if (oldName !== newName) {
+        if (fs.existsSync(newFilePath)) {
+            return res.status(400).json({ error: 'A notebook with this name already exists.' });
+        }
+        try {
+            fs.writeFileSync(newFilePath, JSON.stringify(req.body, null, 2), 'utf-8');
+            if (fs.existsSync(oldFilePath)) {
+                fs.unlinkSync(oldFilePath);
+            }
+            return res.json({ success: true, newName: newName });
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ error: 'Failed to rename notebook on disk' });
+        }
+    } else {
+        try {
+            fs.writeFileSync(newFilePath, JSON.stringify(req.body, null, 2), 'utf-8');
+            res.json({ success: true });
+        } catch (e) {
+            console.error('Error saving notebook:', e);
+            res.status(500).json({ error: 'Failed to save notebook to disk' });
+        }
     }
 });
 
 // Delete a notebook
-app.delete('/api/notebooks/:hash', (req, res) => {
-    const filePath = path.join(notebooksDir, `${req.params.hash}.jsnb`);
+app.delete('/api/notebooks/:name', (req, res) => {
+    const filePath = path.join(notebooksDir, `${req.params.name}.jsnb`);
     if (fs.existsSync(filePath)) {
         try {
             fs.unlinkSync(filePath);

@@ -205,6 +205,15 @@ class App extends React.Component {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.state)
+        }).then(res => res.json()).then(data => {
+            if (data.error) {
+               alert(data.error);
+               // Revert back so it stops erroring repeatedly
+               this.setState({ notebook_name: this.notebookHash });
+            } else if (data.newName && data.newName !== this.notebookHash) {
+               this.notebookHash = data.newName;
+               window.history.replaceState(null, '', `/notebook?notebook_hash=${data.newName}`);
+            }
         }).catch(e => console.error('Error saving to local server', e));
       }
       catch {

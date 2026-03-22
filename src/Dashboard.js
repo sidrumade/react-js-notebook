@@ -38,9 +38,7 @@ const Dashboard = () => {
   };
 
   const handleNewNotebook = () => {
-    const hash = generateHash();
     const newNotebookState = {
-      notebook_hash: hash,
       notebook_name: 'untitled',
       showHelp: false,
       cellContext_data: [
@@ -63,13 +61,17 @@ const Dashboard = () => {
       folders: [],
       currentFolder: null,
     };
-    fetch(`http://localhost:3001/api/notebooks/${hash}`, {
+    fetch('http://localhost:3001/api/notebooks/new', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newNotebookState)
-    }).then(() => {
-      setNotebooks([...notebooks, { hash, name: 'untitled', lastUpdated: new Date().toLocaleTimeString() }]);
-      window.open(`/notebook?notebook_hash=${hash}`, '_blank');
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        setNotebooks([...notebooks, { hash: data.newName, name: data.newName, lastUpdated: new Date().toLocaleTimeString() }]);
+        window.open(`/notebook?notebook_hash=${data.newName}`, '_blank');
+      }
     }).catch(e => console.error("Error creating new notebook", e));
   };
 
@@ -83,18 +85,17 @@ const Dashboard = () => {
         const fileContents = e.target.result;
         const stateFromFile = JSON.parse(fileContents);
         
-        const newHash = generateHash();
-        stateFromFile.notebook_hash = newHash;
-        
-        let notebook_name = stateFromFile.notebook_name || 'untitled';
-
-        fetch(`http://localhost:3001/api/notebooks/${newHash}`, {
+        fetch('http://localhost:3001/api/notebooks/new', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(stateFromFile)
-        }).then(() => {
-          setNotebooks(prev => [...prev, { hash: newHash, name: notebook_name, lastUpdated: new Date().toLocaleTimeString() }]);
-          window.open(`/notebook?notebook_hash=${newHash}`, '_blank');
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+             setNotebooks(prev => [...prev, { hash: data.newName, name: data.newName, lastUpdated: new Date().toLocaleTimeString() }]);
+             window.open(`/notebook?notebook_hash=${data.newName}`, '_blank');
+          }
         }).catch(e => console.error("Error parsing/uploading notebook file", e));
 
       } catch (err) {
@@ -154,7 +155,6 @@ const Dashboard = () => {
             <thead>
               <tr>
                 <th>Notebook Name</th>
-                <th>Hash</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -172,7 +172,6 @@ const Dashboard = () => {
                           {nb.name}.jsnb
                         </a>
                       </td>
-                      <td><small className="text-muted">{nb.hash.substring(0, 8)}</small></td>
                       <td>
                         {isRunning ? <Badge bg="success">Running</Badge> : <Badge bg="secondary">Stopped</Badge>}
                       </td>
@@ -197,7 +196,7 @@ const Dashboard = () => {
           <Table striped bordered>
             <thead>
               <tr>
-                <th>Kernel Hash</th>
+                <th>Kernel Name</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -208,7 +207,7 @@ const Dashboard = () => {
                 activeKernels.map(hash => (
                   <tr key={hash}>
                     <td>
-                      <small>{hash.substring(0, 8)}</small>
+                      <small>{hash}</small>
                     </td>
                     <td>
                       <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenNotebook(hash)}>
