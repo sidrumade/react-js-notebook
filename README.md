@@ -9,8 +9,9 @@ Notebook for javascript experimentation (in the browser). Overview:
 ## Table of contents
 <!-- toc -->
 1. [Getting Started](#getting-started)
-2. [Features](#features)
-3. [Use cases](#use-cases)
+2. [Project Structure](#project-structure)
+3. [Features](#features)
+4. [Use cases](#use-cases)
 5. [Vs. xyz](#how-is-jsnb-different)
 6. [Additional Resources](#links)
 
@@ -22,6 +23,32 @@ Notebook for javascript experimentation (in the browser). Overview:
 ### 5. `serve -s build`
 ### 6. You can also try the hosted version (without downloading anything) here: [( https://moonlit-tanuki-508870.netlify.app )]( https://moonlit-tanuki-508870.netlify.app )
 ### 7. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
+
+## Project Structure
+
+The project is a React-based frontend alongside an Express.js backend, simulating a Jupyter notebook architecture.
+
+```text
+react-js-notebook/
+├── public/                 # Static assets
+├── sample/                 # Sample JS notebooks (.jsnb)
+├── notebooks/              # Local notebook storage directory (for backend API)
+├── src/                    # Main application code
+│   ├── Components/         # React UI Components
+│   │   ├── CellComponent.js   # Code and markdown cell logic
+│   │   ├── CellPlot.js        # Plotting interface
+│   │   ├── HeaderComponent.js # Notebook toolbar and navigation
+│   │   ├── FooterComponent.js # Application footer
+│   │   └── HelpComponent.js   # Help and shortcuts modal
+│   ├── Utils/              # Utility functions for cell operations (Insert, Move, Delete)
+│   ├── App.js              # Application layout and state management
+│   ├── Dashboard.js        # File browser and active kernels dashboard
+│   ├── KernelManager.js    # Manages background web workers for isolated code execution
+│   └── index.js            # React entry point
+├── server.js               # Express server providing a file system API and serving the app
+├── package.json            # Node dependencies and scripts
+└── Dockerfile              # Containerization configuration
+```
 
 ## Features
 - The notebook consists of cells. Each cell will have user inputted code and an output. There is a menu at the top in navbar.
