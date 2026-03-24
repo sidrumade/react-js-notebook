@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Badge, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import kernelManager from './KernelManager';
 import generateHash from './Utils/generateHash';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [notebooks, setNotebooks] = useState([]);
   const [activeKernels, setActiveKernels] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,7 +17,6 @@ const Dashboard = () => {
       .then(res => res.json())
       .then(data => {
         if (!data.error && Array.isArray(data)) {
-          // ensure data elements have proper structure as UI expects
           setNotebooks(data);
         }
       })
@@ -112,6 +113,11 @@ const Dashboard = () => {
     setActiveKernels(kernelManager.getActiveKernels());
   };
 
+  const shutdownAllKernels = () => {
+    activeKernels.forEach(hash => kernelManager.shutdownKernel(hash));
+    setActiveKernels(kernelManager.getActiveKernels());
+  };
+
   const deleteNotebook = (hash) => {
     if (window.confirm("Are you sure you want to delete this notebook permanently?")) {
       fetch(`http://localhost:3001/api/notebooks/${hash}`, {
@@ -124,107 +130,193 @@ const Dashboard = () => {
     }
   };
 
+  const runningCount = activeKernels.length;
+  
+  const filteredNotebooks = notebooks.filter(nb => {
+    if (nb.name && nb.name.toLowerCase().includes(searchTerm.toLowerCase())) return true;
+    return false;
+  });
+
   return (
-    <Container className="mt-5">
-      <Row className="mb-4">
-        <Col>
-          <h2>React Jupyter Notebook Dashboard</h2>
-          <p className="text-muted">Local file directory and kernel management.</p>
-        </Col>
-        <Col className="text-end">
+    <div className="dashboard-root">
+      {/* ── Top Bar ──────────────────────────────────────────────── */}
+      <header className="topbar">
+        <div className="topbar-brand">
+          <div className="brand-icon">⬡</div>
+          <div className="brand-text">
+            <span className="brand-name">NoteKernel</span>
+            <span className="brand-sub">Notebook Dashboard</span>
+          </div>
+        </div>
+        <div className="topbar-actions">
           <input
             type="file"
             accept=".jsnb"
-            id="upload-notebook-input"
+            ref={fileInputRef}
             style={{ display: 'none' }}
             onChange={handleFileUpload}
           />
-          <label htmlFor="upload-notebook-input" className="me-2">
-            <Button variant="outline-primary" as="span">
-              Open Notebook
-            </Button>
-          </label>
-          <Button variant="success" onClick={handleNewNotebook}>+ New Notebook</Button>
-        </Col>
-      </Row>
+          <button className="btn btn-ghost" onClick={() => fileInputRef.current?.click()}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6.5 1v5.5L9 9"/><circle cx="6.5" cy="6.5" r="5.5"/></svg>
+            Open Notebook
+          </button>
+          <button className="btn btn-primary" onClick={handleNewNotebook}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1v10M1 6h10"/></svg>
+            New Notebook
+          </button>
+        </div>
+      </header>
 
-      <Row>
-        <Col md={8}>
-          <h4>Filesystem (Local Storage)</h4>
-          <Table striped bordered hover>
+      {/* ── Layout ───────────────────────────────────────────────── */}
+      <div className="dashboard-layout">
+
+        {/* Page Header */}
+        <div className="page-header">
+          <div className="page-header-left">
+            <h1>Filesystem &amp; Kernels</h1>
+            <p>Local file directory and kernel management</p>
+          </div>
+          <div className="stats-row">
+            <div className="stat">
+              <span className="stat-val" style={{ color: 'var(--green)' }}>{runningCount}</span>
+              <span className="stat-label">Running</span>
+            </div>
+            <div className="stat-sep"></div>
+            <div className="stat">
+              <span className="stat-val" style={{ color: 'var(--text-muted)' }}>{notebooks.length - runningCount > 0 ? notebooks.length - runningCount : 0}</span>
+              <span className="stat-label">Stopped</span>
+            </div>
+            <div className="stat-sep"></div>
+            <div className="stat">
+              <span className="stat-val">{notebooks.length}</span>
+              <span className="stat-label">Total</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Filesystem Panel ──────────────────────────────────── */}
+        <div className="dashboard-panel">
+          <div className="panel-header">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: 'var(--text-muted)' }}><path d="M1 3.5A1.5 1.5 0 012.5 2h3l1.5 2H12.5A1.5 1.5 0 0114 5.5v6A1.5 1.5 0 0112.5 13h-10A1.5 1.5 0 011 11.5v-8z"/></svg>
+            <span className="panel-title">Local Storage</span>
+            <span className="panel-count">{filteredNotebooks.length}</span>
+            <div className="panel-search">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="5.5" cy="5.5" r="4"/><path d="M9 9l2.5 2.5"/></svg>
+              <input type="text" placeholder="Search notebooks…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            </div>
+          </div>
+
+          <table className="nb-table">
             <thead>
               <tr>
-                <th>Notebook Name</th>
+                <th>Notebook</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {notebooks.length === 0 ? (
-                <tr><td colSpan="4" className="text-center">No notebooks found. Create one!</td></tr>
+              {filteredNotebooks.length === 0 ? (
+                <tr>
+                  <td colSpan="3">
+                    <div className="empty-state">No notebooks found.</div>
+                  </td>
+                </tr>
               ) : (
-                notebooks.map((nb) => {
+                filteredNotebooks.map(nb => {
                   const isRunning = activeKernels.includes(nb.hash);
                   return (
-                    <tr key={nb.hash}>
+                    <tr key={nb.hash} onClick={(e) => {
+                      if (e.target.closest('button')) return;
+                      handleOpenNotebook(nb.hash);
+                    }}>
                       <td>
-                        <a href="#!" onClick={(e) => { e.preventDefault(); handleOpenNotebook(nb.hash); }}>
-                          {nb.name}.jsnb
-                        </a>
+                        <div className="nb-name">
+                          <div className={`nb-icon ${isRunning ? 'running' : 'stopped'}`}>
+                            {isRunning ? '📒' : '📓'}
+                          </div>
+                          <div>
+                            <div className="nb-title">{nb.name}</div>
+                            <div className="nb-ext">.jsnb</div>
+                          </div>
+                        </div>
                       </td>
                       <td>
-                        {isRunning ? <Badge bg="success">Running</Badge> : <Badge bg="secondary">Stopped</Badge>}
+                        {isRunning ? (
+                          <span className="badge-status running">
+                            <span className="badge-dot"></span> Running
+                          </span>
+                        ) : (
+                          <span className="badge-status stopped">
+                            <span className="badge-dot"></span> Stopped
+                          </span>
+                        )}
                       </td>
                       <td>
-                        <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenNotebook(nb.hash)}>
-                          Open
-                        </Button>
-                        <Button variant="outline-danger" size="sm" onClick={() => deleteNotebook(nb.hash)}>
-                          Delete
-                        </Button>
+                        <div className="row-actions">
+                          <button className="act-btn act-open" onClick={(e) => { e.stopPropagation(); handleOpenNotebook(nb.hash); }}>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M1 6h9M6 2l4 4-4 4"/></svg>
+                            Open
+                          </button>
+                          <button className="act-btn act-delete" onClick={(e) => { e.stopPropagation(); deleteNotebook(nb.hash); }}>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M2 3h8M4.5 3V2h3v1M4 3l.5 7M8 3l-.5 7"/></svg>
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   )
                 })
               )}
             </tbody>
-          </Table>
-        </Col>
+          </table>
+        </div>
 
-        <Col md={4}>
-          <h4>Active Kernels</h4>
-          <Table striped bordered>
-            <thead>
-              <tr>
-                <th>Kernel Name</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeKernels.length === 0 ? (
-                <tr><td colSpan="2" className="text-center">No running kernels</td></tr>
-              ) : (
-                activeKernels.map(hash => (
-                  <tr key={hash}>
-                    <td>
-                      <small>{hash}</small>
-                    </td>
-                    <td>
-                      <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenNotebook(hash)}>
-                        Open
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => shutdownKernel(hash)}>
-                        Shutdown
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
-    </Container>
+        {/* ── Active Kernels Panel ──────────────────────────────── */}
+        <div className="dashboard-panel kernels-panel">
+          <div className="panel-header">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ color: 'var(--green)' }}><circle cx="7" cy="7" r="2.5"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M3.22 3.22l1.41 1.41M9.37 9.37l1.41 1.41M3.22 10.78l1.41-1.41M9.37 4.63l1.41-1.41"/></svg>
+            <span className="panel-title">Active Kernels</span>
+            <span className="panel-count" style={{ color: 'var(--green)', borderColor: 'rgba(62,207,122,.3)', background: 'var(--green-dim)' }}>{activeKernels.length}</span>
+          </div>
+
+          {activeKernels.length === 0 ? (
+             <div className="empty-state">No running kernels</div>
+          ) : (
+             activeKernels.map(hash => {
+               const nb = notebooks.find(n => n.hash === hash);
+               const name = nb ? nb.name : hash;
+               return (
+                 <div className="kernel-row" key={hash}>
+                   <div className="kernel-indicator"></div>
+                   <div className="kernel-info">
+                     <div className="kernel-name">{name}</div>
+                     <div className="kernel-meta">jsnb · executing</div>
+                   </div>
+                   <div className="kernel-actions">
+                     <button className="act-btn act-open" style={{ padding: '5px 11px', fontSize: '11px' }} onClick={() => handleOpenNotebook(hash)}>Open</button>
+                     <button className="act-btn act-shutdown" style={{ padding: '5px 11px', fontSize: '11px' }} onClick={() => shutdownKernel(hash)}>
+                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M5 1v4M2.5 3A4 4 0 105 9"/></svg>
+                       Shutdown
+                     </button>
+                   </div>
+                 </div>
+               );
+             })
+          )}
+
+          {/* Shutdown All footer */}
+          {activeKernels.length > 0 && (
+            <div style={{ padding: '14px 22px', borderTop: '1px solid var(--border-soft)' }}>
+              <button className="act-btn act-shutdown" style={{ width: '100%', justifyContent: 'center', padding: '9px 14px' }} onClick={shutdownAllKernels}>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 1.5v4M3 3.5A4.5 4.5 0 106 10.5"/></svg>
+                Shutdown All Kernels
+              </button>
+            </div>
+          )}
+        </div>
+
+      </div>{/* /layout */}
+    </div>
   );
 };
 

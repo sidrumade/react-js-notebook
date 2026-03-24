@@ -1,40 +1,120 @@
-.headercomponent .btn {
-    display: inline-block;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    touch-action: manipulation;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent;
-      border-top-color: transparent;
-      border-right-color: transparent;
-      border-bottom-color: transparent;
-      border-left-color: transparent;
-    padding: 3px 1px;
-    font-size: .7rem;
-    line-height: 1.42857143;
-    border-radius: 2px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
+/* ─── Top Bar ───────────────────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 0;
+  height: 52px;
+  background: rgba(15,17,23,.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-right: 20px;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: conic-gradient(from 200deg, #6c8ef7, #5cf4e4, #6c8ef7);
+  border-radius: 8px;
+  display: grid; place-items: center;
+  font-size: 15px;
+  box-shadow: 0 0 12px rgba(108,142,247,.35);
+}
+.topbar-title {
+  font-size: 15px; font-weight: 600; letter-spacing: .02em;
+  color: var(--text);
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-ui);
+}
+.topbar-title span { color: var(--text-muted); font-weight: 400; }
 
-.headercomponent .dropdown-menu{
-  max-height: 50vh;
-  overflow: auto;
-  font-size: .7rem;
+/* Divider */
+.topbar-sep { width: 1px; height: 22px; background: var(--border); margin: 0 12px; }
+
+/* Nav pill menus */
+.topbar-nav { display: flex; align-items: center; gap: 2px; }
+.nav-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500;
+  color: var(--text-muted);
+  transition: color .15s, background .15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.nav-btn:hover { color: var(--text); background: var(--surface-2); }
+.nav-btn svg { width: 14px; height: 14px; opacity: .6; }
+
+/* Dropdown */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  min-width: 180px;
+  z-index: 1000;
+  padding: 8px 0;
+  margin-top: 4px;
+}
+.nav-dropdown:hover .dropdown-menu {
+  display: block;
+}
+.dropdown-item {
+  color: var(--text);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.dropdown-item:hover {
+  background-color: var(--surface-2);
 }
 
-
-.headercomponent .notebook_lbl{
-  height: 1.2em;
-  box-shadow: 1px 1px 3px #c7c9c9 inset;
-  padding: 1rem;
-  border: 1px solid #f8f9fa;
-  border-radius: 11px;
+/* Right actions */
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.btn-run-all {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: .02em;
+  box-shadow: 0 0 16px rgba(108,142,247,.3);
+  transition: opacity .15s, box-shadow .15s;
+}
+.btn-run-all:hover { opacity: .88; box-shadow: 0 0 24px rgba(108,142,247,.45); }
+.kernel-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.kernel-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; } 50% { opacity:.4; }
 }

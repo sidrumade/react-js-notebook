@@ -1,13 +1,35 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700&display=swap');
+
+:root {
+  --bg:          #0f1117;
+  --surface:     #171b26;
+  --surface-2:   #1e2232;
+  --border:      #2a2f45;
+  --border-soft: #232840;
+  --primary:     #6c8ef7;
+  --primary-dim: rgba(108,142,247,.15);
+  --success:     #4ddb8c;
+  --warn:        #f7c06c;
+  --error:       #f76c7a;
+  --text:        #e2e6f3;
+  --text-muted:  #7880a0;
+  --text-dim:    #4a5070;
+  --accent-cyan: #5cf4e4;
+  --gutter:      56px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-ui:     'Syne', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
 }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }

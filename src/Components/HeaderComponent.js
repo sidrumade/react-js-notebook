@@ -1,99 +1,79 @@
 import React from "react";
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import '../header.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faArrowUp, faArrowDown, faPlay, faStop, faRepeat , faRemove } from "@fortawesome/free-solid-svg-icons";
 
 const HeaderComponent = (props) => {
     return (
-        <>
-            <Navbar bg="light" expand="lg" sticky="top" className="ignore-component">
-                <Container className="headercomponent">
-                    <Navbar.Brand href="#" >
-                        <img
-                            alt=""
-                            src={ process.env.PUBLIC_URL + "/logo192.png"}
-                            width="30"
-                            height="30"
-                            className="d-inline-block align-top"
-                            
-                        />{' '}
-                        <input type='text' value={props.notebook_name} className="notebook_lbl" onChange={(e)=>props.notebookNameChangeHandler(e)}></input>
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-
-
-                            <NavDropdown title="Tools" id="basic-nav-dropdown">
-                                <NavDropdown.Item >
-                                <button className="btn" title="insert cell below"  onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
-                                    <FontAwesomeIcon icon={faPlus} /> Insert Cell Below
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item >
-                                <button className="btn" title="insert cell above" onClick={(e)=>props.InsertCellAboveHandler(props.cellIndex)}>
-                                    <FontAwesomeIcon icon={faPlus} /> Insert Cell Above
-                                </button>
-                                </NavDropdown.Item>
-                              
-                                <NavDropdown.Item >
-                                <button className="btn" title="move selected cells up" onClick={(e)=>props.MoveCellUpHandler(props.cellIndex)} >
-                                    <FontAwesomeIcon icon={faArrowUp} /> Move Selected Cell Up
-                                </button>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item >
-                                <button className="btn" title="move selected cells down" onClick={(e)=>props.MoveCellDownHandler(props.cellIndex)}>
-                                    <FontAwesomeIcon icon={faArrowDown} /> Move Selected Cells Down
-                                </button>
-                                </NavDropdown.Item>
-                                
-                                <NavDropdown.Item >
-                                <button className="btn" title="delete cell"  onClick={(e)=>props.DeleteCellHandler(props.cellIndex)} >
-                                    <FontAwesomeIcon icon={faRemove} /> Delete Cell
-                                </button>
-                                </NavDropdown.Item>
-
-                                <NavDropdown.Item >
-                                <button className="btn" title="delete cell"  onClick={(e)=>props.handleClearOutput()} >
-                                    <FontAwesomeIcon icon={faRemove} /> Clear Output
-                                </button>
-                                </NavDropdown.Item>
-                            </NavDropdown>
-
-                            <NavDropdown title="Kernel" id="kernel-nav-dropdown">
-                                <NavDropdown.Item onClick={props.handleInterruptKernel}>
-                                  <FontAwesomeIcon icon={faStop} /> Interrupt Kernel
-                                </NavDropdown.Item>
-                                <NavDropdown.Item onClick={props.handleRestartKernel}>
-                                  <FontAwesomeIcon icon={faRepeat} /> Restart Kernel
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item onClick={props.handleRunAll}>
-                                  <FontAwesomeIcon icon={faPlay} /> Run All Cells
-                                </NavDropdown.Item>
-                            </NavDropdown>
-
-                            <NavDropdown title="Download As" id="basic-nav-dropdown">
-                                <NavDropdown.Item  onClick = {props.handleDownloadHTML} >HTML</NavDropdown.Item>
-                                <NavDropdown.Item onClick={props.handleSaveClick} >Notebook(.jsnb)</NavDropdown.Item>
-                                <NavDropdown.Item onClick = {(e)=> {window.print()}} >PDF</NavDropdown.Item>
-                            </NavDropdown>
-
-                            <Nav.Link  onClick={props.toggleHelpModalOpen}>Help</Nav.Link>
-                            
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-
-            </Navbar>
+        <header className="topbar ignore-component">
+            <div className="topbar-logo">
+                <div className="logo-icon">⬡</div>
+                <input 
+                    type='text' 
+                    value={props.notebook_name} 
+                    className="topbar-title" 
+                    onChange={(e)=>props.notebookNameChangeHandler(e)} 
+                />
+                <span className="topbar-title" style={{marginLeft: '-15px'}}><span>/ notebook</span></span>
+            </div>
             
-        </>
+            <div className="topbar-sep"></div>
+
+            <nav className="topbar-nav">
+                <div className="nav-dropdown">
+                    <button className="nav-btn">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+                        Tools
+                        <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1l4 4 4-4"/></svg>
+                    </button>
+                    <div className="dropdown-menu">
+                        <button className="dropdown-item" onClick={(e)=>props.InsertCellBelowHandler(props.cellIndex)}>
+                             Insert Cell Below
+                        </button>
+                        <button className="dropdown-item" onClick={(e)=>props.InsertCellAboveHandler(props.cellIndex)}>
+                             Insert Cell Above
+                        </button>
+                        <button className="dropdown-item" onClick={(e)=>props.MoveCellUpHandler(props.cellIndex)}>
+                             Move Cell Up
+                        </button>
+                        <button className="dropdown-item" onClick={(e)=>props.MoveCellDownHandler(props.cellIndex)}>
+                             Move Cell Down
+                        </button>
+                        <button className="dropdown-item" style={{color: 'var(--error)'}} onClick={(e)=>props.DeleteCellHandler(props.cellIndex)}>
+                             Delete Cell
+                        </button>
+                        <button className="dropdown-item" onClick={(e)=>props.handleClearOutput()}>
+                             Clear Output
+                        </button>
+                    </div>
+                </div>
+
+                <div className="nav-dropdown">
+                    <button className="nav-btn">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 3l10 10M13 3L3 13"/></svg>
+                        Download As
+                        <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1l4 4 4-4"/></svg>
+                    </button>
+                    <div className="dropdown-menu">
+                        <button className="dropdown-item" onClick={props.handleDownloadHTML}>HTML</button>
+                        <button className="dropdown-item" onClick={props.handleSaveClick}>Notebook (.jsnb)</button>
+                        <button className="dropdown-item" onClick={(e) => {window.print()}}>PDF</button>
+                    </div>
+                </div>
+
+                <button className="nav-btn" onClick={props.toggleHelpModalOpen}>Help</button>
+            </nav>
+
+            <div className="topbar-right">
+                <div className="kernel-badge">
+                    <div className="kernel-dot"></div>
+                    Ready
+                </div>
+                <button className="btn-run-all" onClick={props.handleRunAll}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l9 4.5-9 4.5V1.5z"/></svg>
+                    Run All
+                </button>
+            </div>
+        </header>
     );
 }
-
 
 export default HeaderComponent;

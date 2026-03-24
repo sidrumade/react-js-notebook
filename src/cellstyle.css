@@ -1,310 +1,191 @@
-.jupyter-cell {
-  padding: 10px;
-  background-color: #f7f7f7;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: "Source Code Pro", monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 1em;
+/* ─── Cell ──────────────────────────────────────────────────── */
+.cell {
+  display: flex; flex-direction: column;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+  position: relative;
+}
+.cell:hover { border-color: var(--border); }
+.cell.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary), 0 4px 32px rgba(108,142,247,.12);
 }
 
-.jupyter-cell .input {
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+/* Left execution gutter strip */
+.cell::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: transparent;
+  transition: background .2s;
+  z-index: 10;
 }
+.cell.active::before { background: var(--primary); }
+.cell.ran::before    { background: var(--success); }
 
-.jupyter-cell .output {
-  padding: 1px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.jupyter-cell .output pre {
-  padding: 0;
-  margin: 0;
-}
-
-
-
-/* output style */
-div.output_area {
-  padding: 0px;
-  page-break-inside: avoid;
-  display: -webkit-box;
-  -webkit-box-orient: horizontal;
-  -webkit-box-align: stretch;
-  display: -moz-box;
-  -moz-box-orient: horizontal;
-  -moz-box-align: stretch;
-  display: box;
-  box-orient: horizontal;
-  box-align: stretch;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-}
-div.output_text {
-  text-align: left;
-  color: #000;
-  line-height: 1.21429em;
-}
-div.output_subarea {
-  overflow-x: auto;
-  padding: 0.4em;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  box-flex: 1;
-  flex: 1;
-  max-width: calc(100% - 14ex);
-}
-
-div.output_area pre {
-  margin: 0;
-  padding: 1px 0 1px 0;
-  border: 0;
-  vertical-align: baseline;
-  color: black;
-  background-color: transparent;
-  border-radius: 0;
-}
-
-pre, code, kbd, samp {
-  white-space: pre-wrap;
-}
-
-pre {
-  font-size: inherit;
-  line-height: inherit;
-}
-pre {
-  display: block;
-  padding: 8.5px;
-  margin: 0 0 9px;
-  font-size: 12px;
-  line-height: 1.42857143;
-  color: #333333;
-  word-break: break-all;
-  word-wrap: break-word;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-}
-code, kbd, pre, samp {
-  font-family: monospace;
-}
-pre {
-  overflow: auto;
-}
-div.output_area{
-  display: flex;
-  flex-direction: column;
-}
-div.output.cell_output_block{
-  max-height: 50vh;
-  overflow: auto;
-}
-
-div.run_this_cell {
-  display: block;
-  cursor: pointer;
-  color: #333;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 2ex;
-  padding-right: 2ex;
-  width: 1ex;
-  margin: 0 auto 1% auto;
-}
-
-div.prompt_container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  text-align: right;
-  background: white;
-}
-div.prompt {
-  min-width: 10ex;
-}
-div.input_prompt {
-  color: #303F9F;
-  border-top: 1px solid transparent;
-}
-
-.prompt {
-  min-width: 14ex;
-  padding: 0.4em;
-  margin: 0px;
-  font-family: monospace;
-  text-align: right;
-  line-height: 1.21429em;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+/* Cell header row */
+.cell-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px 10px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface-2);
   user-select: none;
-  cursor: default;
 }
-
-
-/* cell output jupyter */
-div.output_wrapper {
-  position: relative;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-box-align: stretch;
-  display: -moz-box;
-  -moz-box-orient: vertical;
-  -moz-box-align: stretch;
-  display: box;
-  box-orient: vertical;
-  box-align: stretch;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  z-index: 1;
+.cell-exec-label {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  color: var(--primary);
+  min-width: 52px;
 }
-
-div.prompt:empty {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-div.out_prompt_overlay {
-  height: 100%;
-  padding: 0px 0.4em;
-    padding-top: 0px;
-    padding-bottom: 0px;
-  position: absolute;
-  border-radius: 2px;
-}
-
-div.output_scroll {
-  max-height: 20em;
-  width: 100%;
-  overflow: auto;
-  border-radius: 2px;
-  -webkit-box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
-  display: block;
-}
-.output {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-box-align: stretch;
-  display: -moz-box;
-  -moz-box-orient: vertical;
-  -moz-box-align: stretch;
-  display: box;
-  box-orient: vertical;
-  box-align: stretch;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-div.output_area {
-  padding: 0px;
-  page-break-inside: avoid;
-  display: -webkit-box;
-  -webkit-box-orient: horizontal;
-  -webkit-box-align: stretch;
-  display: -moz-box;
-  -moz-box-orient: horizontal;
-  -moz-box-align: stretch;
-  display: box;
-  box-orient: horizontal;
-  box-align: stretch;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-}
-div.output_prompt {
-  color: #D84315;
-}
-
-div.output_scroll div.output_subarea {
-  overflow-x: visible;
-}
-div.output_subarea {
-  overflow-x: auto;
-  padding: 0.4em;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  box-flex: 1;
-  flex: 1;
-  max-width: calc(100% - 14ex);
-}
-.rendered_html {
-  color: #000;
-}
-
-div.output_text {
-  text-align: left;
-  color: #000;
-  line-height: 1.21429em;
-}
-
-/* *selected cell */
-div.cell.selected, div.cell.selected.jupyter-soft-selected {
-  border-color: #ababab;
-  border-left: solid blue;
-  
-}
-div.cell {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-box-align: stretch;
-  display: -moz-box;
-  -moz-box-orient: vertical;
-  -moz-box-align: stretch;
-  display: box;
-  box-orient: vertical;
-  box-align: stretch;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  border-radius: 2px;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  width: 100%;
-  padding: 5px;
-  margin: 0px;
+.cell-type-select {
+  appearance: none;
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  padding: 3px 22px 3px 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237880a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  cursor: pointer;
   outline: none;
-  position: relative;
-  overflow: visible;
-  background: white;
+}
+.cell-exec-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-left: 4px;
+}
+.cell-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity .15s; }
+.cell:hover .cell-actions, .cell.active .cell-actions { opacity: 1; }
+.icon-btn {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  display: grid; place-items: center;
+  color: var(--text-muted);
+  transition: color .15s, background .15s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.icon-btn:hover { color: var(--text); background: var(--border-soft); }
+.icon-btn.run-btn { color: var(--primary); }
+.icon-btn.run-btn:hover { background: var(--primary-dim); color: var(--primary); }
+
+/* Code area */
+.cell-code {
+  padding: 16px 20px 16px 20px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text);
+  min-height: 72px;
+  outline: none;
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
 }
 
-
-.prompt.output_prompt{
-  display: flex;
-  flex-direction: column;
+.cell-code textarea {
+  outline: none !important;
 }
 
-.clear_out_btn{
-  height: 2em;
-  width: 2em;
-  margin:0 auto;
+.cell-code textarea::placeholder {
+  color: var(--text-dim) !important;
+  font-family: var(--font-mono);
 }
 
-.hide_element{
-  display: none !important;
+/* Output area */
+.cell-output {
+  border-top: 1px solid var(--border-soft);
+  background: rgba(0,0,0,.18);
+  padding: 14px 20px;
+}
+.output-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.output-label {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  color: var(--success);
+}
+.output-clear {
+  margin-left: auto;
+  width: 24px; height: 24px;
+  border-radius: 5px;
+  display: grid; place-items: center;
+  color: var(--text-dim);
+  transition: color .15s, background .15s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.output-clear:hover { color: var(--error); background: rgba(247,108,122,.1); }
+.output-log {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.output-log pre {
+  margin: 0; padding: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: inherit;
+}
+.output-log .log-url { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.output-log .log-ok, .output-log .success-text { color: var(--success); }
+
+/* ─── Empty / placeholder cell ─────────────────────────────── */
+.cell-placeholder {
+  display: flex; align-items: center;
+  padding: 0 20px;
+  min-height: 52px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  border-radius: var(--radius-lg);
+  border: 1.5px dashed var(--border-soft);
+  cursor: text;
+  transition: border-color .2s, color .2s;
+}
+.cell-placeholder:hover { border-color: var(--primary); color: var(--text-muted); }
+
+/* Error Output */
+.cell-error-output {
+  margin: 0;
+  padding: 12px 20px;
+  background-color: rgba(247, 108, 122, 0.1);
+  color: var(--error);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-top: 1px solid var(--border-soft);
 }
 
-.executionTime{
-  margin: 1% auto auto auto;
-  color : #303F9F;
-  font-size: 0.8em;
+.markdown-body {
+  color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.6;
 }
 
-.css-mmb2gq{
-  margin-top:10% !important;
+/* Base prism theme overrides for dark mode */
+pre[class*="language-"],
+code[class*="language-"] {
+  color: #abb2bf;
+  text-shadow: none;
 }
+.token.comment, .token.prolog, .token.doctype, .token.cdata { color: #5c6370; }
+.token.punctuation { color: #abb2bf; }
+.token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol, .token.deleted { color: #d19a66; }
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #98c379; }
+.token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string { color: #56b6c2; }
+.token.atrule, .token.attr-value, .token.keyword { color: #c678dd; }
+.token.function, .token.class-name { color: #61afef; }
+.token.regex, .token.important, .token.variable { color: #c678dd; }

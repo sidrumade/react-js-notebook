@@ -462,12 +462,13 @@ class App extends React.Component {
 
         <div id="notebook_panel">
           <div id="notebook">
-            <div id="notebook-container" className='container'>
+            <main className='workspace'>
               {
                 this.state.cellContext_data.map((item, index) => {
-                  return <CellComponent 
+                  return (
+                    <React.Fragment key={item.id || index}>
+                      <CellComponent 
                             rows={item.rows} 
-                            key={item.id || index} 
                             cellindex={index} 
                             editorsValue={item.editorsValue} 
                             handleEditorChange={this.handleEditorChange} 
@@ -484,10 +485,40 @@ class App extends React.Component {
                             execution_count={item.execution_count}
                             is_executing={item.is_executing}
                             changeCellType={this.changeCellType}
-                          />
+                      />
+                      <div className="add-cell-row">
+                         <div className="add-line"></div>
+                         <button className="add-btn" onClick={() => this.InsertCellBelowHandler(index)}>
+                           + Code
+                         </button>
+                         <button className="add-btn" onClick={() => {
+                             this.InsertCellBelowHandler(index);
+                             setTimeout(() => this.changeCellType(index + 1, 'markdown'), 0);
+                         }}>
+                           + Markdown
+                         </button>
+                         <div className="add-line"></div>
+                      </div>
+                    </React.Fragment>
+                  )
                 })
               }
-            </div>
+
+              {/* Persistent Add Cell Row at end */}
+              <div className="add-cell-row" style={{ opacity: 1, marginTop: '4px' }}>
+                <div className="add-line"></div>
+                <button className="add-btn" onClick={() => this.InsertCellBelowHandler(this.state.cellContext_data.length - 1)}>
+                  + Code
+                </button>
+                <button className="add-btn" onClick={() => {
+                    this.InsertCellBelowHandler(this.state.cellContext_data.length - 1);
+                    setTimeout(() => this.changeCellType(this.state.cellContext_data.length, 'markdown'), 0);
+                }}>
+                  + Markdown
+                </button>
+                <div className="add-line"></div>
+              </div>
+            </main>
           </div>
         </div>
 
