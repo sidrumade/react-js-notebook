@@ -485,6 +485,9 @@ class App extends React.Component {
                             execution_count={item.execution_count}
                             is_executing={item.is_executing}
                             changeCellType={this.changeCellType}
+                            MoveCellUpHandler={this.MoveCellUpHandler}
+                            MoveCellDownHandler={this.MoveCellDownHandler}
+                            DeleteCellHandler={this.DeleteCellHandler}
                       />
                       <div className="add-cell-row">
                          <div className="add-line"></div>

@@ -45,13 +45,13 @@ const CellComponent = memo((props) => {
         {hasRun && <span className="cell-exec-time">{props.executionTime} Sec.</span>}
         
         <div className="cell-actions">
-           <button className="icon-btn" title="Move up" onClick={(e) => { e.stopPropagation(); /* TODO: impl move cell up prop if passed */ }}>
+           <button className="icon-btn" title="Move up" onClick={(e) => { e.stopPropagation(); props.MoveCellUpHandler(props.cellindex); }}>
              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M7 11V3M3 7l4-4 4 4"/></svg>
            </button>
-           <button className="icon-btn" title="Move down" onClick={(e) => { e.stopPropagation(); /* TODO: impl move cell down prop if passed */ }}>
+           <button className="icon-btn" title="Move down" onClick={(e) => { e.stopPropagation(); props.MoveCellDownHandler(props.cellindex); }}>
              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M7 3v8M3 7l4 4 4-4"/></svg>
            </button>
-           <button className="icon-btn" title="Delete" onClick={(e) => { e.stopPropagation(); /* Delete not passed here, let user clear out */ props.handleClearOutput(props.cellindex) }}>
+           <button className="icon-btn" title="Delete" onClick={(e) => { e.stopPropagation(); props.DeleteCellHandler(props.cellindex); }}>
              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M2 3.5h10M5.5 3.5V2h3v1.5M5 5.5v5M9 5.5v5M3.5 3.5l.5 8h6l.5-8"/></svg>
            </button>
            <button className="icon-btn run-btn" onClick={onRunClick} title="Run cell">
