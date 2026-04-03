@@ -93,7 +93,8 @@
   text-align: left;
 }
 .dropdown-item:hover {
-  background-color: var(--surface-2);
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
 }
 
 /* Right actions */
