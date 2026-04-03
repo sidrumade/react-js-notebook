@@ -50,10 +50,44 @@ class KernelManager {
         }
       };
 
-      // We can intercept console.log if needed or pass custom display messages
-      self.show = function(...data) {
-        if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: data.join(' ') });
+      let outputBuffer = [];
+      let outputLinesCount = 0;
+      let flushTimeout = null;
+      let lastFlushTime = 0;
+      const MAX_LINES = ${process.env.REACT_APP_MAX_OUTPUT_LINES || 1000};
+
+      const flushBuffer = () => {
+         if (outputBuffer.length > 0 && currentCellId) {
+            self.postMessage({ type: 'output', cellId: currentCellId, data: outputBuffer });
+            outputBuffer = [];
+         }
+         lastFlushTime = performance.now();
       };
+
+      const customPrint = (str) => {
+         if (!currentCellId) return;
+         if (outputLinesCount >= MAX_LINES) {
+            if (outputLinesCount === MAX_LINES) {
+               outputBuffer.push("--- [Output truncated: maximum of " + MAX_LINES + " lines reached] ---");
+               outputLinesCount++;
+               flushBuffer();
+            }
+            return;
+         }
+         outputBuffer.push(str);
+         outputLinesCount++;
+         
+         if (performance.now() - lastFlushTime > 50) {
+            flushBuffer();
+         } else if (!flushTimeout) {
+            flushTimeout = setTimeout(() => {
+               flushBuffer();
+               flushTimeout = null;
+            }, 50);
+         }
+      };
+
+      self.show = function(...data) { customPrint(data.join(' ')); };
 
       // Polyfill console to route outputs directly to the Notebook cell
       const originalLog = console.log;
@@ -67,22 +101,10 @@ class KernelManager {
          catch (e) { return String(val); }
       };
 
-      console.log = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(safeSerialize).join(' ') });
-         originalLog.apply(console, args);
-      };
-      console.info = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: args.map(safeSerialize).join(' ') });
-         originalInfo.apply(console, args);
-      };
-      console.warn = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'WARN: ' + args.map(safeSerialize).join(' ') });
-         originalWarn.apply(console, args);
-      };
-      console.error = function(...args) {
-         if (currentCellId) self.postMessage({ type: 'output', cellId: currentCellId, data: 'ERROR: ' + args.map(safeSerialize).join(' ') });
-         originalError.apply(console, args);
-      };
+      console.log = function(...args) { customPrint(args.map(safeSerialize).join(' ')); originalLog.apply(console, args); };
+      console.info = function(...args) { customPrint(args.map(safeSerialize).join(' ')); originalInfo.apply(console, args); };
+      console.warn = function(...args) { customPrint('WARN: ' + args.map(safeSerialize).join(' ')); originalWarn.apply(console, args); };
+      console.error = function(...args) { customPrint('ERROR: ' + args.map(safeSerialize).join(' ')); originalError.apply(console, args); };
 
       self.insertHTML = function(html) {
         if (currentCellId) self.postMessage({ type: 'html', cellId: currentCellId, data: html });
@@ -100,6 +122,7 @@ class KernelManager {
         if (command === 'execute') {
           currentCellId = cellId;
           executionCount++;
+          outputLinesCount = 0;
           self.postMessage({ type: 'status', cellId, status: 'executing' });
           let raw_output;
           let errorMsg = '';
@@ -119,6 +142,8 @@ class KernelManager {
 
           const endTime = performance.now();
           const executionTime = ((endTime - startTime) / 1000).toFixed(2);
+          
+          flushBuffer();
           
           self.postMessage({ 
             type: 'done', 

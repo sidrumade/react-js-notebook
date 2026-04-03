@@ -148,7 +148,8 @@ class App extends React.Component {
         const newCells = [...prevState.cellContext_data];
         const cellIndex = newCells.findIndex(c => c.id === cellId);
         if (cellIndex > -1) {
-          const newOutput = [...newCells[cellIndex].output, data];
+          const appendedOutput = Array.isArray(data) ? data : [data];
+          const newOutput = [...newCells[cellIndex].output, ...appendedOutput];
           newCells[cellIndex] = { ...newCells[cellIndex], output: newOutput };
         }
         return { cellContext_data: newCells };
