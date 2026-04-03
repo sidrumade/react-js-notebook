@@ -1,9 +1,123 @@
-.helpcomponent{
-    height: 70vh;
-    overflow-y: scroll;
+.helpcomponent {
+  height: 70vh;
+  overflow-y: auto;
+  padding-right: 12px;
 }
 
+.helpcomponent::-webkit-scrollbar {
+  width: 6px;
+}
 
-.helpcomponent .title{
-    font-weight: bold;
+.helpcomponent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.helpcomponent::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.helpcomponent h4 {
+  font-family: var(--font-ui);
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.helpcomponent p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.helpcomponent .title {
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.helpcomponent pre {
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+/* Modal UI overrides to match dark notebook */
+.modal-content {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-soft) !important;
+  background-color: var(--surface-2) !important;
+  border-top-left-radius: calc(var(--radius-lg) - 1px) !important;
+  border-top-right-radius: calc(var(--radius-lg) - 1px) !important;
+  padding: 16px 24px !important;
+}
+
+.modal-header .modal-title {
+  font-family: var(--font-ui) !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  color: var(--text) !important;
+}
+
+.modal-header .btn-close, 
+.modal-header .close {
+  filter: invert(1) grayscale(100%) brightness(200%) !important;
+  opacity: 0.7 !important;
+}
+
+.modal-body {
+  padding: 24px !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-soft) !important;
+  background-color: var(--surface-2) !important;
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px) !important;
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px) !important;
+  padding: 16px 24px !important;
+}
+
+.modal-footer .btn.btn-light {
+  background-color: var(--bg) !important;
+  border-color: var(--border) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.modal-footer .btn.btn-light svg {
+  fill: var(--text-muted) !important;
+  transition: fill 0.2s;
+}
+
+.modal-footer .btn.btn-light:hover {
+  background-color: var(--border-soft) !important;
+}
+
+.modal-footer .btn.btn-light:hover svg {
+  fill: var(--text) !important;
+}
+
+.modal-footer .btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-family: var(--font-ui) !important;
+}
+
+.modal-footer .btn-primary:hover {
+  filter: brightness(1.1);
 }
