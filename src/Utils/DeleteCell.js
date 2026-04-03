@@ -14,7 +14,14 @@ const DeleteCell = (props)=>{
           newCellContextData[index]['cellindex_value'] = index;
         });
 
-        return { 'cellContext_data' : newCellContextData }
+        let newActiveIndex = prevState.active_cell_index;
+        if (newActiveIndex === cellIndex) {
+            newActiveIndex = Math.max(0, cellIndex - 1);
+        } else if (newActiveIndex > cellIndex) {
+            newActiveIndex--;
+        }
+
+        return { 'cellContext_data' : newCellContextData, 'active_cell_index' : newActiveIndex }
     });
 
 

@@ -241,9 +241,15 @@ class App extends React.Component {
 
 
   run = (cellIndex, this_component) => {
-    let code = this_component.state.cellContext_data[cellIndex].editorsValue;
-    const cellId = this_component.state.cellContext_data[cellIndex].id;
-    const cellType = this_component.state.cellContext_data[cellIndex].cell_type;
+    const cellData = this_component.state.cellContext_data[cellIndex];
+    if (!cellData) {
+        console.error('Invalid cellIndex passed to run:', cellIndex);
+        return 0;
+    }
+
+    let code = cellData.editorsValue;
+    const cellId = cellData.id;
+    const cellType = cellData.cell_type;
 
     if (cellType === 'markdown') {
        // Markdowns don't evaluate
@@ -275,7 +281,7 @@ class App extends React.Component {
 
   handleRunThisCell =(cell_index)=>{
     this.changeActiveCellIndex(cell_index);
-    this.evalCode(this.state.active_cell_index);
+    this.evalCode(cell_index);
   }
 
 
@@ -313,7 +319,9 @@ class App extends React.Component {
   changeCellType = (cellIndex, type) => {
     this.setState(prevState => {
        const newCells = [...prevState.cellContext_data];
-       newCells[cellIndex] = { ...newCells[cellIndex], cell_type: type };
+       if (newCells[cellIndex]) {
+           newCells[cellIndex] = { ...newCells[cellIndex], cell_type: type };
+       }
        return { cellContext_data: newCells };
     });
   }
@@ -507,20 +515,6 @@ class App extends React.Component {
                 })
               }
 
-              {/* Persistent Add Cell Row at end */}
-              <div className="add-cell-row" style={{ opacity: 1, marginTop: '4px' }}>
-                <div className="add-line"></div>
-                <button className="add-btn" onClick={() => this.InsertCellBelowHandler(this.state.cellContext_data.length - 1)}>
-                  + Code
-                </button>
-                <button className="add-btn" onClick={() => {
-                    this.InsertCellBelowHandler(this.state.cellContext_data.length - 1);
-                    setTimeout(() => this.changeCellType(this.state.cellContext_data.length, 'markdown'), 0);
-                }}>
-                  + Markdown
-                </button>
-                <div className="add-line"></div>
-              </div>
             </main>
           </div>
         </div>

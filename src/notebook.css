@@ -8,12 +8,15 @@
 /* ─── Add cell bar ──────────────────────────────────────────── */
 .add-cell-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 4px 0;
+  height: 24px;
+  margin: -18px 0; /* Counteracts the flex gap so total distance is still 12px */
   opacity: 0;
   transition: opacity .2s;
+  position: relative;
+  z-index: 10;
 }
-.add-cell-row:hover, .workspace:hover .add-cell-row { opacity: 1; }
-.add-line { flex: 1; height: 1px; background: var(--border-soft); }
+.add-cell-row:hover { opacity: 1; }
+.add-line { flex: 1; border-top: 1px dashed var(--border-soft); height: 0; background: transparent; }
 .add-btn {
   display: flex; align-items: center; gap: 6px;
   padding: 5px 14px;

@@ -17,19 +17,25 @@ const InsertCellBelow = (props)=>{
 
     props.this_component.setState(prevState => {
         const newCellContextData = [...prevState.cellContext_data];
-        let active_cell_index = prevState.active_cell_index ;
+        let targetIndex = cellIndex;
+        let newActiveIndex = prevState.active_cell_index;
 
-        if (typeof newCellContextData[active_cell_index+1] === "undefined" || props.force === true ) { // if next cell not available than add empty
-          newCellContextData.splice(active_cell_index+1, 0, cellContext); //add output array also
-         active_cell_index ++ 
+        if (typeof newCellContextData[targetIndex+1] === "undefined" || props.force === true ) { 
+          newCellContextData.splice(targetIndex+1, 0, cellContext);
+          newActiveIndex = targetIndex + 1;
         }
         else {
-          //if next cell already exist then set it as active
-          if (typeof newCellContextData[active_cell_index+1] != "undefined"){
-            active_cell_index ++
+          if (typeof newCellContextData[targetIndex+1] != "undefined"){
+            newActiveIndex = targetIndex + 1;
           } 
         }
-        return { 'cellContext_data' : newCellContextData , 'active_cell_index': active_cell_index };
+
+        // Fix cellindex_value attributes
+        newCellContextData.forEach((item, idx) => {
+          item.cellindex_value = idx;
+        });
+
+        return { 'cellContext_data' : newCellContextData , 'active_cell_index': newActiveIndex };
       });
 
     

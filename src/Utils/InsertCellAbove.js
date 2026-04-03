@@ -18,10 +18,10 @@ const InsertCellAbove = (props) => {
   props.this_component.setState(prevState => {
     const newCellContextData = [...prevState.cellContext_data];
     newCellContextData.splice(cellIndex, 0, cellContext); //add output array also
-    newCellContextData.map((item, index) => {
-      newCellContextData[index]['cellindex_value'] = index;
+    newCellContextData.forEach((item, index) => {
+      item.cellindex_value = index;
     });
-    return { 'cellContext_data': newCellContextData };
+    return { 'cellContext_data': newCellContextData, 'active_cell_index': cellIndex };
   });
 
 

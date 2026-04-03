@@ -14,11 +14,18 @@ const MoveCellUp = (props)=>{
 
 
         [newCellContextData[index1] , newCellContextData[index2]]  = [newCellContextData[index2] , newCellContextData[index1]] 
-        newCellContextData.map((item, index) => {
-          newCellContextData[index]['cellindex_value'] = index;
+        newCellContextData.forEach((item, index) => {
+          item.cellindex_value = index;
         });
 
-        return { 'cellContext_data' : newCellContextData }
+        let newActiveIndex = prevState.active_cell_index;
+        if (newActiveIndex === index1) {
+            newActiveIndex = index2;
+        } else if (newActiveIndex === index2) {
+            newActiveIndex = index1;
+        }
+
+        return { 'cellContext_data' : newCellContextData, 'active_cell_index': newActiveIndex }
     });
 
 
