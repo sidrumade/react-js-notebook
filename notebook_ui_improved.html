@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notebook — Improved UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ─── Design Tokens ─────────────────────────────────────────── */
+  :root {
+    --bg:          #0f1117;
+    --surface:     #171b26;
+    --surface-2:   #1e2232;
+    --border:      #2a2f45;
+    --border-soft: #232840;
+    --primary:     #6c8ef7;
+    --primary-dim: rgba(108,142,247,.15);
+    --success:     #4ddb8c;
+    --warn:        #f7c06c;
+    --error:       #f76c7a;
+    --text:        #e2e6f3;
+    --text-muted:  #7880a0;
+    --text-dim:    #4a5070;
+    --accent-cyan: #5cf4e4;
+    --gutter:      56px;       /* line-number gutter */
+    --radius-sm:   6px;
+    --radius-md:   10px;
+    --radius-lg:   14px;
+    --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+    --font-ui:     'Syne', sans-serif;
+  }
+
+  /* ─── Reset & Base ──────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+  /* ─── Top Bar ───────────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 0;
+    height: 52px;
+    background: rgba(15,17,23,.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+  .topbar-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-right: 20px;
+  }
+  .logo-icon {
+    width: 30px; height: 30px;
+    background: conic-gradient(from 200deg, #6c8ef7, #5cf4e4, #6c8ef7);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 15px;
+    box-shadow: 0 0 12px rgba(108,142,247,.35);
+  }
+  .topbar-title {
+    font-size: 15px; font-weight: 600; letter-spacing: .02em;
+    color: var(--text);
+  }
+  .topbar-title span { color: var(--text-muted); font-weight: 400; }
+
+  /* Divider */
+  .topbar-sep { width: 1px; height: 22px; background: var(--border); margin: 0 12px; }
+
+  /* Nav pill menus */
+  .topbar-nav { display: flex; align-items: center; gap: 2px; }
+  .nav-btn {
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    transition: color .15s, background .15s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--surface-2); }
+  .nav-btn svg { width: 14px; height: 14px; opacity: .6; }
+
+  /* Right actions */
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .btn-run-all {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: #fff;
+    font-family: var(--font-ui);
+    font-size: 13px; font-weight: 600;
+    letter-spacing: .02em;
+    box-shadow: 0 0 16px rgba(108,142,247,.3);
+    transition: opacity .15s, box-shadow .15s;
+  }
+  .btn-run-all:hover { opacity: .88; box-shadow: 0 0 24px rgba(108,142,247,.45); }
+  .kernel-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 11px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 12px; color: var(--text-muted);
+  }
+  .kernel-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:.4; }
+  }
+
+  /* ─── Layout ────────────────────────────────────────────────── */
+  .workspace {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* ─── Cell ──────────────────────────────────────────────────── */
+  .cell {
+    display: flex; flex-direction: column;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-soft);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+    position: relative;
+  }
+  .cell:hover { border-color: var(--border); }
+  .cell.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary), 0 4px 32px rgba(108,142,247,.12);
+  }
+
+  /* Left execution gutter strip */
+  .cell::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: transparent;
+    transition: background .2s;
+  }
+  .cell.active::before { background: var(--primary); }
+  .cell.ran::before    { background: var(--success); }
+
+  /* Cell header row */
+  .cell-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 10px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface-2);
+    user-select: none;
+  }
+  .cell-exec-label {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    color: var(--primary);
+    min-width: 52px;
+  }
+  .cell-type-select {
+    appearance: none;
+    background: var(--border-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: 11px;
+    padding: 3px 22px 3px 8px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237880a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    cursor: pointer;
+  }
+  .cell-exec-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: 4px;
+  }
+  .cell-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity .15s; }
+  .cell:hover .cell-actions, .cell.active .cell-actions { opacity: 1; }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    display: grid; place-items: center;
+    color: var(--text-muted);
+    transition: color .15s, background .15s;
+  }
+  .icon-btn:hover { color: var(--text); background: var(--border-soft); }
+  .icon-btn.run-btn { color: var(--primary); }
+  .icon-btn.run-btn:hover { background: var(--primary-dim); color: var(--primary); }
+
+  /* Code area */
+  .cell-code {
+    padding: 16px 20px 16px 20px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text);
+    min-height: 72px;
+    outline: none;
+    tab-size: 2;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  /* syntax tints */
+  .kw   { color: #bf91f3; }
+  .fn   { color: #6c8ef7; }
+  .str  { color: var(--success); }
+  .cmt  { color: var(--text-dim); font-style: italic; }
+  .mth  { color: var(--accent-cyan); }
+
+  /* Output area */
+  .cell-output {
+    border-top: 1px solid var(--border-soft);
+    background: rgba(0,0,0,.18);
+    padding: 14px 20px;
+  }
+  .output-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .output-label {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 500;
+    color: var(--success);
+  }
+  .output-clear {
+    margin-left: auto;
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    display: grid; place-items: center;
+    color: var(--text-dim);
+    transition: color .15s, background .15s;
+  }
+  .output-clear:hover { color: var(--error); background: rgba(247,108,122,.1); }
+  .output-log {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+  .output-log .log-url { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .output-log .log-ok  { color: var(--success); }
+
+  /* ─── Empty / placeholder cell ─────────────────────────────── */
+  .cell-placeholder {
+    display: flex; align-items: center;
+    padding: 0 20px;
+    min-height: 52px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    border-radius: var(--radius-lg);
+    border: 1.5px dashed var(--border-soft);
+    cursor: text;
+    transition: border-color .2s, color .2s;
+  }
+  .cell-placeholder:hover { border-color: var(--primary); color: var(--text-muted); }
+
+  /* ─── Add cell bar ──────────────────────────────────────────── */
+  .add-cell-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 0;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .add-cell-row:hover, .workspace:hover .add-cell-row { opacity: 1; }
+  .add-line { flex: 1; height: 1px; background: var(--border-soft); }
+  .add-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 12px; font-weight: 600;
+    color: var(--text-muted);
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  .add-btn:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-dim); }
+
+  /* ─── Scrollbar ─────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ── Top Bar ──────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-icon">⬡</div>
+    <span class="topbar-title">untitled <span>/ notebook</span></span>
+  </div>
+
+  <div class="topbar-sep"></div>
+
+  <nav class="topbar-nav">
+    <button class="nav-btn">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+      Tools
+      <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+    <button class="nav-btn">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3l10 10M13 3L3 13"/></svg>
+      Download As
+      <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+    <button class="nav-btn">Help</button>
+  </nav>
+
+  <div class="topbar-right">
+    <div class="kernel-badge">
+      <div class="kernel-dot"></div>
+      TensorFlow.js · Ready
+    </div>
+    <button class="btn-run-all">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l9 4.5-9 4.5V1.5z"/></svg>
+      Run All
+    </button>
+  </div>
+</header>
+
+<!-- ── Notebook Workspace ──────────────────────────────────── -->
+<main class="workspace">
+
+  <!-- Cell 1 (executed) -->
+  <div class="cell ran active">
+    <div class="cell-header">
+      <span class="cell-exec-label">In [1]</span>
+      <select class="cell-type-select">
+        <option>Code</option>
+        <option>Markdown</option>
+        <option>Raw</option>
+      </select>
+      <span class="cell-exec-time">0.19 s</span>
+      <div class="cell-actions">
+        <button class="icon-btn" title="Move up">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 11V3M3 7l4-4 4 4"/></svg>
+        </button>
+        <button class="icon-btn" title="Move down">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3v8M3 7l4 4 4-4"/></svg>
+        </button>
+        <button class="icon-btn" title="Duplicate">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="4" width="8" height="9" rx="1.5"/><path d="M5 4V2.5A1.5 1.5 0 016.5 1H11.5A1.5 1.5 0 0113 2.5v7A1.5 1.5 0 0111.5 11H10"/></svg>
+        </button>
+        <button class="icon-btn" title="Delete">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 3.5h10M5.5 3.5V2h3v1.5M5 5.5v5M9 5.5v5M3.5 3.5l.5 8h6l.5-8"/></svg>
+        </button>
+        <button class="icon-btn run-btn" title="Run cell">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 2l9 5-9 5V2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cell-code" contenteditable="true" spellcheck="false"><span class="cmt">// Using markdown</span>
+<span class="cmt">// Try changing this cell to markdown via Header Controls</span>
+<span class="fn">loadLibrary</span>(<span class="str">"https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"</span>);
+<span class="mth">console</span>.<span class="fn">log</span>(<span class="str">"Background TF successfully ready!"</span>);</div>
+
+    <div class="cell-output">
+      <div class="output-header">
+        <span class="output-label">Out [1]</span>
+        <button class="output-clear" title="Clear output">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 2l8 8M10 2L2 10"/></svg>
+        </button>
+      </div>
+      <div class="output-log">
+        Script loaded: <span class="log-url">https://cdn.jsdelivr.net/npm/@tensorflow/tfjs</span><br>
+        <span class="log-ok">✓ Background TF successfully ready!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add cell row -->
+  <div class="add-cell-row">
+    <div class="add-line"></div>
+    <button class="add-btn">+ Code</button>
+    <button class="add-btn">+ Markdown</button>
+    <div class="add-line"></div>
+  </div>
+
+  <!-- Cell 2 (empty) -->
+  <div class="cell" onclick="this.querySelector('.cell-code').focus()">
+    <div class="cell-header">
+      <span class="cell-exec-label" style="color:var(--text-dim)">In [ ]</span>
+      <select class="cell-type-select">
+        <option>Code</option>
+        <option>Markdown</option>
+        <option>Raw</option>
+      </select>
+      <div class="cell-actions">
+        <button class="icon-btn run-btn" title="Run cell">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 2l9 5-9 5V2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="cell-code" contenteditable="true" spellcheck="false" style="color:var(--text-dim); min-height:56px;" data-placeholder="Type code here…"></div>
+  </div>
+
+  <!-- Add cell row (end) -->
+  <div class="add-cell-row" style="opacity:1; margin-top:4px;">
+    <div class="add-line"></div>
+    <button class="add-btn">+ Code</button>
+    <button class="add-btn">+ Markdown</button>
+    <div class="add-line"></div>
+  </div>
+
+</main>
+
+<script>
+  // Activate cell on focus
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('focusin', () => {
+      document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
+      cell.classList.add('active');
+    });
+  });
+
+  // Placeholder text for empty code areas
+  document.querySelectorAll('.cell-code[data-placeholder]').forEach(el => {
+    el.addEventListener('focus', () => { if (!el.textContent) el.textContent = ''; });
+    el.addEventListener('blur',  () => {
+      if (!el.textContent.trim()) el.setAttribute('data-empty','true');
+      else el.removeAttribute('data-empty');
+    });
+  });
+</script>
+</body>
+</html>
