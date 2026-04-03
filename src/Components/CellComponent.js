@@ -51,9 +51,6 @@ const CellComponent = memo((props) => {
     >
       {!showMarkdown && (
         <div className="cell-header">
-          <span className="cell-exec-label" style={hasRun || props.is_executing ? {} : {color: 'var(--text-dim)'}}>
-            In [{props.is_executing ? '*' : (props.execution_count !== null ? props.execution_count : ' ')}]
-          </span>
           <select 
              className="cell-type-select"
              value={props.cell_type} 
@@ -128,7 +125,6 @@ const CellComponent = memo((props) => {
       {props.output?.length > 0 && (
         <div className="cell-output">
           <div className="output-header">
-             <span className="output-label">Out [{props.execution_count !== null ? props.execution_count : ' '}]</span>
              <button className="output-clear" title="Clear output" onClick={(e) => { e.stopPropagation(); props.handleClearOutput(props.cellindex) }}>
                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M2 2l8 8M10 2L2 10"/></svg>
              </button>
