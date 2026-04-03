@@ -26,6 +26,7 @@
 }
 .cell.active::before { background: var(--primary); }
 .cell.ran::before    { background: var(--success); }
+.cell.markdown::before { background: #EF9F27; }
 
 /* Cell header row */
 .cell-header {
@@ -92,7 +93,15 @@
 }
 
 .markdown-body.cell-code {
-  padding: 16px 20px 16px 20px !important;
+  padding: 8px 16px !important;
+}
+
+.markdown-body > *:first-child {
+  margin-top: 0;
+}
+
+.markdown-body > *:last-child {
+  margin-bottom: 0;
 }
 
 .cell-code textarea {
