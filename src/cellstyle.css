@@ -80,7 +80,6 @@
 
 /* Code area */
 .cell-code {
-  padding: 16px 20px 16px 20px;
   font-family: var(--font-mono);
   font-size: 13.5px;
   line-height: 1.75;
@@ -90,6 +89,10 @@
   tab-size: 2;
   white-space: pre;
   overflow-x: auto;
+}
+
+.markdown-body.cell-code {
+  padding: 16px 20px 16px 20px !important;
 }
 
 .cell-code textarea {

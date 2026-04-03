@@ -74,6 +74,7 @@ const CellComponent = memo((props) => {
           onValueChange={(newValue) => props.handleEditorChange(newValue, props.cellindex)}
           highlight={code => Prism.highlight(code, Prism.languages.javascript)}
           onKeyDown={props.handleKeyDown}
+          padding={16}
           className="cell-code"
           placeholder="// Type code here..."
           style={{}}
