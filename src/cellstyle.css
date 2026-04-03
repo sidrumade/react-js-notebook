@@ -136,6 +136,8 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-muted);
+  max-height: 400px;
+  overflow-y: auto;
 }
 .output-log pre {
   margin: 0; padding: 0;
