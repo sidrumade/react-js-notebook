@@ -126,6 +126,12 @@
   box-shadow: 0 0 6px var(--success);
   animation: pulse 2s infinite;
 }
+.kernel-dot.busy {
+  background: #f5a623; /* fallback orange */
+  background: var(--warning, #f5a623);
+  box-shadow: 0 0 6px var(--warning, #f5a623);
+  animation: pulse 1s infinite;
+}
 @keyframes pulse {
   0%,100% { opacity:1; } 50% { opacity:.4; }
 }

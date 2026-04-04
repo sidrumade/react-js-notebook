@@ -64,8 +64,8 @@ const HeaderComponent = (props) => {
 
             <div className="topbar-right">
                 <div className="kernel-badge">
-                    <div className="kernel-dot"></div>
-                    Ready
+                    <div className={`kernel-dot ${props.isKernelBusy ? 'busy' : ''}`}></div>
+                    {props.isKernelBusy ? 'Busy' : 'Ready'}
                 </div>
                 <button className="btn-run-all" onClick={props.handleRunAll}>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l9 4.5-9 4.5V1.5z"/></svg>

@@ -446,7 +446,7 @@ class App extends React.Component {
   
 
   render = () => {
-
+    const isKernelBusy = this.state.cellContext_data.some(cell => cell.is_executing);
 
     return (
       <div className="App">
@@ -466,6 +466,7 @@ class App extends React.Component {
           handleInterruptKernel={this.handleInterruptKernel}
           handleRestartKernel={this.handleRestartKernel}
           handleRunAll={this.handleRunAll}
+          isKernelBusy={isKernelBusy}
         />
 
 
