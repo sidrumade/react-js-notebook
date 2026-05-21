@@ -19,10 +19,17 @@ Notebook for javascript experimentation (in the browser). Overview:
 ### 1. `Clone this repository`
 ### 2. `npm install`
 ### 3. `npm run build`
-### 4. `npm install -g serve`
-### 5. `serve -s build`
-### 6. You can also try the hosted version (without downloading anything) here: [( https://moonlit-tanuki-508870.netlify.app )]( https://moonlit-tanuki-508870.netlify.app )
-### 7. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
+### 4. Run BOTH the backend API and frontend in production:
+* **Option A (Easy - Single Command):**
+  ```bash
+  npm run serve-prod
+  ```
+* **Option B (Separate Terminals):**
+  1. Start backend: `node server.js`
+  2. Serve frontend: `npx serve -s build`
+
+### 5. You can also try the hosted version (without downloading anything) here: [( https://moonlit-tanuki-508870.netlify.app )]( https://moonlit-tanuki-508870.netlify.app )
+### 6. More examples will be added in the folder examples/ in the repository. Check the [README in that folder](/examples/README.md) for links.
 
 ## Project Structure
 
