@@ -1,0 +1,39 @@
+{
+  "isLoaded": true,
+  "notebook_hash": "untitled",
+  "notebook_name": "untitled",
+  "showHelp": false,
+  "cellContext_data": [
+    {
+      "id": "3a6ea2b696d44d499ea256ca16fec994",
+      "cell_type": "code",
+      "execution_count": 1,
+      "is_executing": false,
+      "cellindex_value": 0,
+      "output": [
+        "Script loaded successfully: https://cdn.jsdelivr.net/npm/@tensorflow/tfjs",
+        "Background TF successfully ready!"
+      ],
+      "editorsValue": "// Using markdown\n// Try changing this cell to markdown via Header Controls or keep it as Javascript\nloadLibrary(\"https://cdn.jsdelivr.net/npm/@tensorflow/tfjs\");\nconsole.log(\"Background TF successfully ready!\");",
+      "rows": 4,
+      "error": "",
+      "html_element": "",
+      "executionTime": "0.19"
+    },
+    {
+      "id": "6ad38eeb2ff04845ba6fba40954d6b65",
+      "cell_type": "code",
+      "execution_count": null,
+      "is_executing": false,
+      "cellindex_value": 1,
+      "output": [],
+      "editorsValue": "",
+      "rows": 5,
+      "plotly_input": {}
+    }
+  ],
+  "run_all": false,
+  "active_cell_index": 0,
+  "folders": [],
+  "currentFolder": null
+}
